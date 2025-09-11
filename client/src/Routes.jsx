@@ -14,6 +14,7 @@ const lazyWithDelay = (importFn, delay = 2000) => {
 
 // COMPONENT IMPORT
 import Loader from "./components/Loader/Loader"
+import Layout from './Layout';
 
 // PAGES IMPORTS
 // const Hero = lazy( () => import('./pages/Hero/Hero'))
@@ -27,24 +28,16 @@ const Home = lazyWithDelay(() => import('./pages/Home/Home'), 3000);
 function Routes() {
 
   const router = createBrowserRouter(createRoutesFromChildren(
-    <>
+    <Route path='/' element={<Layout />}>
       <Route 
-        path='/'
+        index
         element={
           <Suspense fallback={ <Loader/> }> 
             <Home />
           </Suspense>
         }
       />
-      {/* <Route 
-      path='/'
-      element={
-        <Suspense fallback={<Loader /> }> 
-          <Hero/>
-        </Suspense>
-      }
-      /> */}
-    </>
+    </Route>
   ))
 
   return (

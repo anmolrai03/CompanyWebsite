@@ -121,8 +121,6 @@
 //     </header>
 //   );
 // }
-
-// export default Header;
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
@@ -160,9 +158,6 @@ function ScrollRotatingLogo() {
 
 function Header() {
   const headerRef = useRef();
-  const leftTextRef = useRef();
-  const rightTextRef = useRef();
-  const logoRef = useRef();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const menuSidebarRef = useRef();
@@ -197,6 +192,8 @@ function Header() {
 
   const openMenu = () => {
     setIsMenuOpen(true);
+    // Disable body scroll when menu is open
+    document.body.style.overflow = 'hidden';
     gsap.to(menuSidebarRef.current, {
       x: 0,
       duration: 0.4,
@@ -209,12 +206,18 @@ function Header() {
       x: '-100%',
       duration: 0.4,
       ease: "power2.in",
-      onComplete: () => setIsMenuOpen(false)
+      onComplete: () => {
+        setIsMenuOpen(false);
+        // Re-enable body scroll when menu is closed
+        document.body.style.overflow = 'auto';
+      }
     });
   };
 
   const openCart = () => {
     setIsCartOpen(true);
+    // Disable body scroll when cart is open
+    document.body.style.overflow = 'hidden';
     gsap.to(cartSidebarRef.current, {
       x: 0,
       duration: 0.4,
@@ -227,65 +230,34 @@ function Header() {
       x: '100%',
       duration: 0.4,
       ease: "power2.in",
-      onComplete: () => setIsCartOpen(false)
+      onComplete: () => {
+        setIsCartOpen(false);
+        // Re-enable body scroll when cart is closed
+        document.body.style.overflow = 'auto';
+      }
     });
   };
-
-  useEffect(() => {
-    // Scale up animation for the entire header
-    gsap.fromTo(headerRef.current,
-      {
-        scale: 0.8,
-        opacity: 0,
-        y: -10
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "back.out(1.7)",
-        delay: 0.5
-      }
-    );
-
-    // Animate text elements with slight delay
-    gsap.fromTo(leftTextRef.current,
-      { x: -30, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: "power2.out" }
-    );
-
-    gsap.fromTo(rightTextRef.current,
-      { x: 30, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.8, delay: 0.9, ease: "power2.out" }
-    );
-
-    // Scale up logo with a bounce effect
-    gsap.fromTo(logoRef.current,
-      { scale: 0.7, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.8, delay: 0.7, ease: "elastic.out(1, 0.5)" }
-    );
-  }, []);
 
   return (
     <>
       <header 
         ref={headerRef}
-        className="fixed top-0 w-full z-50 flex items-center py-10 bg-black/90 backdrop-blur-lg px-16 md:px-32"
+        className="fixed top-0 w-full z-50 flex items-center py-6 bg-transparent px-6 md:px-12 lg:px-24 h-16 md:h-20"
       >
-        {/* Desktop Layout */}
-        <div className="hidden md:flex items-center justify-between w-full">
-          {/* Left side text elements */}
-          <div ref={leftTextRef} className="flex items-center space-x-12">
+        {/* DESKTOP LAYOUT SECITON HIDDEN IN TABLET AND MOBILE STARTS HERE */}
+        <div className="hidden lg:flex items-center justify-between w-full">
+
+          {/* LEFT SIDE ELEMENTS STARTS HERE */}
+          <div className="flex items-center space-x-8">
             <span className="text-white text-sm uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer">Shop</span>
             <span className="text-white text-sm uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer">Our Story</span>
             <span className="text-white text-sm uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer">Lookbook</span>
           </div>
+          {/* LEFT SIDE ELEMENTS ENDS HERE  */}
 
-          {/* Logo - positioned slightly left */}
+          {/* LOGO SECTION STARTS HERE - FIXED POSITIONING ISSUE */}
           <div 
-            ref={logoRef}
-            className="w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 cursor-pointer hover:scale-105 -ml-16"
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 transition-all duration-300 cursor-pointer hover:scale-105"
             onClick={handleLogoClick}
           >
             <Canvas camera={{ position: [0, 0, 3] }}>
@@ -303,28 +275,34 @@ function Header() {
               <ScrollRotatingLogo />
             </Canvas>
           </div>
+          {/* LOGO SECTION ENDS HERE */}
 
-          {/* Right side text elements */}
-          <div ref={rightTextRef} className="flex items-center">
+          {/* RIGHT SIDE ELEMENTS STARTS HERE */}
+          <div className="flex items-center">
             <span className="text-white text-sm uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer">Bag</span>
           </div>
-        </div>
+          {/* RIGHT SIDE ELEMENTS ENDS HERE  */}
 
-        {/* Mobile Layout */}
-        <div className="flex md:hidden items-center justify-between w-full px-4">
-          {/* Hamburger Menu Button */}
+        </div>
+        {/* DESKTOP LAYOUT SECITON HIDDEN IN TABLET AND MOBILE ENDS HERE */}
+
+        {/* MOBILE AND TABLET VIEW STARTS HERE */}
+        <div className="flex lg:hidden items-center justify-between w-full">
+
+          {/* HAMBURGER SIGN STARTS HERE */}
           <button 
             onClick={toggleMenu}
-            className="text-white hover:text-indigo-300 transition-colors p-2"
+            className="text-white hover:text-indigo-300 transition-colors p-3"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
+          {/* HAMBURGER SECTION ENDS HERE */}
 
-          {/* Centered Logo */}
+          {/* CENTERED LOGO STARTS HERE - FIXED SIZES FOR DIFFERENT SCREEN SIZES */}
           <div 
-            className="w-20 h-20 transition-all duration-300 cursor-pointer hover:scale-105"
+            className="w-16 h-16 md:w-24 md:h-24 transition-all duration-300 cursor-pointer hover:scale-105"
             onClick={handleLogoClick}
           >
             <Canvas camera={{ position: [0, 0, 3] }}>
@@ -342,90 +320,97 @@ function Header() {
               <ScrollRotatingLogo />
             </Canvas>
           </div>
+          {/* CENTERED LOGO ENDS HERE */}
 
-          {/* Bag Button */}
+          {/* BAG BUTTON SECTION STARTS HERE */}
           <button 
             onClick={toggleCart}
-            className="text-white text-sm uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer p-2"
+            className="text-white text-sm md:text-base uppercase tracking-widest font-light hover:text-indigo-300 transition-colors cursor-pointer p-3"
           >
             Bag
           </button>
+          {/* BAG BUTTON SECTION ENDS HERE */}
+
         </div>
+        {/* MOBILE AND TABLET VIEW ENDS HERE */}
       </header>
 
-      {/* Mobile Menu Sidebar */}
+      {/* MOBILE SIDE BAR STARTS HERE*/}
       <div 
         ref={menuSidebarRef}
-        className="fixed inset-y-0 left-0 z-40 w-80 bg-[#f8f5f0] transform -translate-x-full md:hidden"
-        style={{ boxShadow: '4px 0 20px rgba(0,0,0,0.1)' }}
+        className="fixed inset-0 z-40 bg-[#f8f5f0] transform -translate-x-full lg:hidden"
       >
-        <div className="h-full flex flex-col p-6 pt-20">
+        <div className="h-full flex flex-col p-8 pt-24">
           {/* Header with Name and Close Button */}
-          <div className="flex justify-between items-center mb-12 px-2">
-            <span className="text-black text-lg font-medium">Name</span>
+          <div className="flex justify-between items-center mb-16 px-4">
+            <span className="text-black text-xl font-medium">Name</span>
             <button 
               onClick={closeMenu}
-              className="text-black hover:text-gray-600 transition-colors p-1"
+              className="text-black hover:text-gray-600 transition-colors p-2"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          {/* Menu Items */}
-          <div className="flex flex-col space-y-6">
-            <span className="text-black text-base uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-2 border-b border-gray-200">Shop</span>
-            <span className="text-black text-base uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-2 border-b border-gray-200">Our Story</span>
-            <span className="text-black text-base uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-2 border-b border-gray-200">Lookbook</span>
+          {/* Menu Items with proper spacing */}
+          <div className="flex flex-col space-y-8 px-6">
+            <span className="text-black text-lg uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-4 border-b border-gray-200">Shop</span>
+            <span className="text-black text-lg uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-4 border-b border-gray-200">Our Story</span>
+            <span className="text-black text-lg uppercase tracking-widest font-light hover:text-gray-600 transition-colors cursor-pointer py-4 border-b border-gray-200">Lookbook</span>
           </div>
+
         </div>
       </div>
+      {/* MOBILE SIDEBAR ENDS HERE */}
 
-      {/* Mobile Cart Sidebar */}
+      {/* MOBILE CART SIDEBAR STARTS HERE */}
       <div 
         ref={cartSidebarRef}
-        className="fixed inset-y-0 right-0 z-40 w-80 bg-[#f8f5f0] transform translate-x-full md:hidden"
-        style={{ boxShadow: '-4px 0 20px rgba(0,0,0,0.1)' }}
+        className="fixed inset-0 z-40 bg-[#f8f5f0] transform translate-x-full lg:hidden"
       >
-        <div className="h-full flex flex-col p-6 pt-20">
+        <div className="h-full flex flex-col p-8 pt-24">
           {/* Header with Name and Close Button */}
-          <div className="flex justify-between items-center mb-12 px-2">
-            <span className="text-black text-lg font-medium">Bag</span>
+          <div className="flex justify-between items-center mb-16 px-4">
+            <span className="text-black text-xl font-medium">Bag</span>
             <button 
               onClick={closeCart}
-              className="text-black hover:text-gray-600 transition-colors p-1"
+              className="text-black hover:text-gray-600 transition-colors p-2"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Cart Content */}
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-gray-500 text-center">Your bag is empty</p>
+          <div className="flex-1 flex items-center justify-center px-6">
+            <p className="text-gray-500 text-center text-lg">Your bag is empty</p>
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-200 pt-4">
-            <button className="w-full bg-black text-white py-3 px-4 text-sm uppercase tracking-widest font-light hover:bg-gray-800 transition-colors">
+          <div className="border-t border-gray-200 pt-6 px-6">
+            <button className="w-full bg-black text-white py-4 px-6 text-base uppercase tracking-widest font-light hover:bg-gray-800 transition-colors">
               Checkout
             </button>
           </div>
         </div>
       </div>
+      {/* MOBILE CART SIDEBAR ENDS HERE */}
 
-      {/* Overlay */}
+      {/* OVERLAY STARTS HERE */}
       {(isMenuOpen || isCartOpen) && (
         <div 
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => {
             if (isMenuOpen) closeMenu();
             if (isCartOpen) closeCart();
           }}
         ></div>
       )}
+      {/* OVERLAY ENDS HERE */}
+
     </>
   );
 }
