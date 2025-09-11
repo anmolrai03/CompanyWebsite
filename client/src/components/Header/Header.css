@@ -1,0 +1,16 @@
+.logo-container {
+  transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
+}
+
+header {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+header.scrolled {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
