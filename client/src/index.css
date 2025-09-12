@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Apply box-sizing and basic reset to all elements */
-* {
+:root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -72,4 +72,8 @@ body::-webkit-scrollbar {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
+}
+
+.test-border{
+  border: 2px solid white;
 }

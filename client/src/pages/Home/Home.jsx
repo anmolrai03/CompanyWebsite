@@ -36,7 +36,11 @@ import Hero from '../../components/Hero/Hero'
 function Home() {
   return (
     <>
+
+    <section className='w-full h-max py-16 md:py-20 test-border'>
       <Hero />
+    </section>
+      
       
       <section className="bg-red-500 w-full min-h-[200px] flex items-center justify-center">
         <div className="w-full px-4">
