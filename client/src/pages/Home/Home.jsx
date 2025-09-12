@@ -38,7 +38,7 @@ function Home() {
   return (
     <>
 
-    <section className='w-full h-max py-16 md:py-20 test-border'>
+    <section className='w-full h-max'>
       <Hero />
     </section>
       

@@ -1,33 +1,45 @@
 // =====================
 // File: src/App.jsx
 // =====================
-import React from "react";
+import React, { useEffect } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/all";
 
-// updated imports with new names
-import TopPage from "./components/blocks/TopPage";
-import MiddlePage from "./components/blocks/MiddlePage";
-import LargeImage from "./components/blocks/LargeImage";
-import SmallTile from "./components/blocks/SmallTile";
-import ProductGrid from "./components/blocks/ProductGrid";
-import Showcase from "./components/blocks/Showcase";
-import BottomPage from "./components/blocks/BottomPage";
+// your blocks
+import TopPage from "../blocks/TopPage";
+import MiddlePage from "../blocks/MiddlePage";
+import LargeImage from "../blocks/LargeImage";
+import SmallTile from "../blocks/SmallTile";
+import ProductGrid from "../blocks/ProductGrid";
+import Showcase from "../blocks/Showcase";
+import BottomPage from "../blocks/BottomPage";
 
-
-// register ScrollTrigger once at app start
+// register plugin
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
+  useEffect(() => {
+    // example scroll animation
+    gsap.from(".animate-me", {
+      scrollTrigger: {
+        trigger: ".animate-me",
+        start: "top 80%",   // when element enters viewport
+        toggleActions: "play none none reverse",
+      },
+      opacity: 0,
+      y: 100,
+      duration: 1,
+      ease: "power3.out",
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white font-sans">
-      <TopPage />
+      {/* <TopPage /> */}
       <MiddlePage />
 
       <LargeImage
-        src={
-          "https://imgs.search.brave.com/md2jlyFiuXs1zxy-dUYFMaUYYzqRW4-6z2GVjnV4Vh0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzM5LzMx/Lzg2LzM5MzE4Njky/YmFmN2ZhYWRlMTNk/MWQ1ZTJjOWJhMDg5/LmpwZw"
-        }
+        src="https://imgs.search.brave.com/md2jlyFiuXs1zxy-dUYFMaUYYzqRW4-6z2GVjnV4Vh0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzM5LzMx/Lzg2LzM5MzE4Njky/YmFmN2ZhYWRlMTNk/MWQ1ZTJjOWJhMDg5/LmpwZw"
         alt="Models wearing collection"
         height="140vh"
         pinSpacer={true}
@@ -36,7 +48,13 @@ export default function App() {
         cover={true}
       />
 
-      <SmallTile title="NOUVELLE COLLECTION" subtitle="Nos produits" />
+      {/* add class to target */}
+      <SmallTile
+        className="animate-me"
+        title="NOUVELLE COLLECTION"
+        subtitle="Nos produits"
+      />
+
       <ProductGrid />
       <Showcase />
       <BottomPage />

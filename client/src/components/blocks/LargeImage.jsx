@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 // ScrollTrigger is registered in App.jsx; this import ensures type resolution in editors
-
+import { ScrollTrigger } from "gsap/all";
+import gsap from "gsap";
 
 export default function LargeImage({ src, alt = "", height = "140vh", pinSpacer = true, caption = "", showDots = false, cover = true }) {
 const wrapRef = useRef(null);

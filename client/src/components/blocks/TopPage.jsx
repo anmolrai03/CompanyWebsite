@@ -33,11 +33,11 @@ function NavButton({ children }) {
 function CartButton() {
   return (
     <div className="flex items-center gap-3">
-      <button className="bg-black/60 border border-white/20 px-4 py-2 rounded-md">
+      {/* <button className="bg-black/60 border border-white/20 px-4 py-2 rounded-md">
         Tous nos articles
-      </button>
+      </button> */}
       <button className="bg-black/60 border border-white/20 px-4 py-2 rounded-md flex items-center gap-2">
-        👜 SAC / 0
+        👜 BAG / 0
       </button>
     </div>
   );
