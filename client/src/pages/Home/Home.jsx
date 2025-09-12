@@ -32,6 +32,7 @@
 // pages/Home.jsx
 import React from 'react'
 import Hero from '../../components/Hero/Hero'
+import MiddleSection from '../../components/MiddleSection/MiddleSection'
 
 function Home() {
   return (
@@ -42,17 +43,20 @@ function Home() {
     </section>
       
       
-      <section className="bg-red-500 w-full min-h-[200px] flex items-center justify-center">
+      {/* <section className="bg-red-500 w-full min-h-[200px] flex items-center justify-center">
         <div className="w-full px-4">
           abc
         </div>
-      </section>
+      </section> */}
 
-      <section className="bg-orange-500 w-full min-h-[200px] flex items-center justify-center">
+
+      <MiddleSection/>
+
+      {/* <section className="bg-orange-500 w-full min-h-[200px] flex items-center justify-center">
         <div className="w-full px-4">
           abc
-        </div>
-      </section>
+        </div> */}
+      {/* </section> */}
     </>
   )
 }
