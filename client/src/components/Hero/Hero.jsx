@@ -148,16 +148,16 @@ export default function Hero() {
   return (
     <section className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden pt-12">
       {/* Side text */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white text-sm">
-        ØFLYN
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white text-sm z-10">
+        DEV SPHERE
       </div>
-      <div className="absolute left-1/4 top-1/2 -translate-y-1/2 text-white text-sm">
+      <div className="absolute left-1/4 top-1/2 -translate-y-1/2 text-white text-sm z-10">
         MEMORY
       </div>
-      <div className="absolute right-1/4 top-1/2 -translate-y-1/2 text-white text-sm">
+      <div className="absolute right-1/4 top-1/2 -translate-y-1/2 text-white text-sm z-10">
         COLLECTION
       </div>
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-white text-sm">
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-white text-sm z-10">
         2025
       </div>
 
