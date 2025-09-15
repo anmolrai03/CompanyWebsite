@@ -45,10 +45,14 @@ export default function Hero() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showControls, setShowControls] = useState(true);
 
   const videoContainerRef = useRef(null);
   const fullscreenVideoRef = useRef(null);
   const previewVideoRef = useRef(null);
+  const controlsTimeoutRef = useRef(null);
+  const originalOverflowRef = useRef("");
+  const hiddenElementsRef = useRef([]);
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -64,6 +68,149 @@ export default function Hero() {
     };
   }, []);
 
+  // Lock scroll and hide everything when video is playing
+  useEffect(() => {
+    if (isPlaying) {
+      // Store original overflow value
+      originalOverflowRef.current = document.body.style.overflow;
+      
+      // Lock scroll
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      
+      // Reset the array
+      hiddenElementsRef.current = [];
+      
+      // Find the React root element (usually has id="root" or similar)
+      const rootElement = document.getElementById('root') || 
+                         document.querySelector('[data-reactroot]') || 
+                         document.body.children[0]; // fallback to first child
+      
+      if (rootElement) {
+        // Hide all direct children of the root element
+        const rootChildren = rootElement.children;
+        
+        for (let i = 0; i < rootChildren.length; i++) {
+          const element = rootChildren[i];
+          
+          // Skip if this element contains our video container
+          if (element === videoContainerRef.current || 
+              element.contains(videoContainerRef.current) ||
+              element.classList.contains('fullscreen-video-container')) {
+            continue;
+          }
+          
+          // Store the original visibility state and hide the element
+          hiddenElementsRef.current.push({
+            element: element,
+            originalVisibility: element.style.visibility || ''
+          });
+          
+          element.style.visibility = "hidden";
+        }
+      }
+      
+      // Also hide any direct children of body that aren't the root
+      const bodyChildren = document.body.children;
+      for (let i = 0; i < bodyChildren.length; i++) {
+        const element = bodyChildren[i];
+        
+        // Skip the root element (already handled above) and our video container
+        if (element === rootElement || 
+            element === videoContainerRef.current || 
+            element.contains(videoContainerRef.current) ||
+            element.classList.contains('fullscreen-video-container')) {
+          continue;
+        }
+        
+        // Store the original visibility state and hide the element
+        hiddenElementsRef.current.push({
+          element: element,
+          originalVisibility: element.style.visibility || ''
+        });
+        
+        element.style.visibility = "hidden";
+      }
+      
+      // Also ensure our video container is visible and properly positioned
+      if (videoContainerRef.current) {
+        videoContainerRef.current.style.visibility = "visible";
+        videoContainerRef.current.style.zIndex = "9999";
+      }
+      
+    } else {
+      // Restore scroll and show all elements
+      document.body.style.overflow = originalOverflowRef.current;
+      document.documentElement.style.overflow = "auto";
+      
+      // Show all previously hidden elements
+      hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
+        element.style.visibility = originalVisibility;
+      });
+      
+      hiddenElementsRef.current = []; // Clear the array
+    }
+    
+    return () => {
+      // Cleanup in case component unmounts during fullscreen
+      document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
+      
+      // Restore all hidden elements
+      hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
+        element.style.visibility = originalVisibility;
+      });
+      hiddenElementsRef.current = [];
+    };
+  }, [isPlaying]);
+
+  // Auto-hide controls after 3 seconds
+  useEffect(() => {
+    if (isPlaying) {
+      setShowControls(true);
+      
+      // Clear any existing timeout
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+      
+      // Set new timeout to hide controls
+      controlsTimeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 3000);
+    }
+    
+    return () => {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+    };
+  }, [isPlaying, isVideoPlaying, isMuted, currentTime]);
+
+  // Show controls on mouse move
+  useEffect(() => {
+    const handleMouseMove = () => {
+      if (isPlaying) {
+        setShowControls(true);
+        
+        // Reset the timeout to hide controls
+        if (controlsTimeoutRef.current) {
+          clearTimeout(controlsTimeoutRef.current);
+        }
+        
+        controlsTimeoutRef.current = setTimeout(() => {
+          setShowControls(false);
+        }, 3000);
+      }
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [isPlaying]);
+
   // ---- Handlers ----
   const handleOpen = () => {
     setIsPlaying(true);
@@ -71,8 +218,6 @@ export default function Hero() {
     if (isMobile) {
       // Mobile animation - scale from small centered video to fullscreen
       const previewRect = previewVideoRef.current.getBoundingClientRect();
-      const scaleX = window.innerWidth / previewRect.width;
-      const scaleY = window.innerHeight / previewRect.height;
       
       gsap.fromTo(
         videoContainerRef.current,
@@ -95,8 +240,11 @@ export default function Hero() {
           ease: "power4.inOut",
           onComplete: () => {
             if (fullscreenVideoRef.current) {
-              fullscreenVideoRef.current.play();
-              setIsVideoPlaying(true);
+              fullscreenVideoRef.current.play().then(() => {
+                setIsVideoPlaying(true);
+              }).catch(error => {
+                console.error("Error playing video:", error);
+              });
             }
           },
         }
@@ -113,31 +261,15 @@ export default function Hero() {
           ease: "power4.inOut",
           onComplete: () => {
             if (fullscreenVideoRef.current) {
-              fullscreenVideoRef.current.play();
-              setIsVideoPlaying(true);
+              fullscreenVideoRef.current.play().then(() => {
+                setIsVideoPlaying(true);
+              }).catch(error => {
+                console.error("Error playing video:", error);
+              });
             }
           },
         }
       );
-    }
-  };
-
-  const handlePlayPause = () => {
-    if (fullscreenVideoRef.current) {
-      if (isVideoPlaying) {
-        fullscreenVideoRef.current.pause();
-        setIsVideoPlaying(false);
-      } else {
-        fullscreenVideoRef.current.play();
-        setIsVideoPlaying(true);
-      }
-    }
-  };
-
-  const handleMute = () => {
-    if (fullscreenVideoRef.current) {
-      fullscreenVideoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
     }
   };
 
@@ -198,6 +330,25 @@ export default function Hero() {
     }
   };
 
+  const handlePlayPause = () => {
+    if (fullscreenVideoRef.current) {
+      if (isVideoPlaying) {
+        fullscreenVideoRef.current.pause();
+        setIsVideoPlaying(false);
+      } else {
+        fullscreenVideoRef.current.play();
+        setIsVideoPlaying(true);
+      }
+    }
+  };
+
+  const handleMute = () => {
+    if (fullscreenVideoRef.current) {
+      fullscreenVideoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -208,24 +359,28 @@ export default function Hero() {
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.key === "Escape") handleClose();
+      if (e.key === " ") handlePlayPause(); // Space to play/pause
+      if (e.key === "m") handleMute(); // M to mute/unmute
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [isVideoPlaying, isMuted]);
 
   // ---- Video listeners ----
   useEffect(() => {
     const video = fullscreenVideoRef.current;
     if (video) {
       const updateTime = () => setCurrentTime(video.currentTime);
-      const updateDuration = () => setDuration(video.duration);
+      const updateDuration = () => setDuration(video.duration || 0);
 
       video.addEventListener("timeupdate", updateTime);
       video.addEventListener("loadedmetadata", updateDuration);
+      video.addEventListener("ended", () => setIsVideoPlaying(false));
 
       return () => {
         video.removeEventListener("timeupdate", updateTime);
         video.removeEventListener("loadedmetadata", updateDuration);
+        video.removeEventListener("ended", () => setIsVideoPlaying(false));
       };
     }
   }, [isPlaying]);
@@ -264,25 +419,40 @@ export default function Hero() {
         </div>
       )}
 
-      {/* Fullscreen state */}
-      {isPlaying && (
-        <div
-          ref={videoContainerRef}
-          className="fixed inset-0 z-50 bg-black"
-          style={{
-            transformOrigin: isMobile ? "center center" : "center center",
-          }}
+      {/* Fullscreen state - This is always in the DOM but positioned off-screen when not playing */}
+      <div
+        ref={videoContainerRef}
+        className="fullscreen-video-container fixed inset-0 z-[9999] bg-transparent flex items-center justify-center"
+        style={{ 
+          display: isPlaying ? "flex" : "none",
+          left: isPlaying ? "0" : "-100vw",
+          top: isPlaying ? "0" : "-100vh"
+        }}
+        onClick={(e) => {
+          // Toggle play/pause when clicking on the video
+          if (e.target === videoContainerRef.current || e.target === fullscreenVideoRef.current) {
+            handlePlayPause();
+          }
+        }}
+      >
+        {/* Video */}
+        <video
+          ref={fullscreenVideoRef}
+          className="w-full h-full object-cover"
+          muted={isMuted}
+          autoPlay={isPlaying}
+          playsInline
         >
-          <video
-            ref={fullscreenVideoRef}
-            className="w-full h-full object-cover"
-            muted={isMuted}
-          >
-            <source src="/hero-video.mp4" type="video/mp4" />
-          </video>
+          <source src="/hero-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-          {/* Controls */}
-          <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex flex-wrap items-center justify-between gap-2">
+        {/* Controls Overlay - only show when showControls is true */}
+        {showControls && (
+          <div 
+            className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex flex-wrap items-center justify-between gap-2"
+            onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to video
+          >
             {/* Left controls */}
             <div className="flex items-center gap-2">
               <SmallTile 
@@ -313,13 +483,29 @@ export default function Hero() {
                 />
               )}
               <SmallTile 
-                name={`${formatTime(currentTime)} / ${formatTime(duration || 0)}`} 
+                name={`${formatTime(currentTime)} / ${formatTime(duration)}`} 
               />
-              <SmallTile name="Close" icon={CloseIcon} onClick={handleClose} />
+              <SmallTile 
+                name="Close" 
+                icon={CloseIcon} 
+                onClick={handleClose} 
+              />
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Show play button in center when paused and controls are hidden */}
+        {!isVideoPlaying && !showControls && (
+          <div 
+            className="absolute inset-0 flex items-center justify-center"
+            onClick={handlePlayPause}
+          >
+            <div className="bg-black/50 rounded-full p-4 cursor-pointer">
+              <PlayIcon />
+            </div>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
