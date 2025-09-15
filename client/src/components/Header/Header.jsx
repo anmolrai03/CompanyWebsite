@@ -771,7 +771,7 @@ function Header({ isLoading = false }) {
 
           {/* Menu Items */}
           <div className="flex-1 flex flex-col px-6">
-            {["Home", "Our Story", "Lookbook", "Services", "Shop"].map((item, i) => (
+            {["Home", "Our Story", "Lookbook", "Services"].map((item, i) => (
               <div
                 key={i}
                 ref={(el) => (menuItemsRef.current[i] = el)}
