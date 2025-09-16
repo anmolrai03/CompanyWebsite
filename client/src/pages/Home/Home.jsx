@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 
 import Hero from "../../components/Hero/Hero";
 import MiddleSection from "../../components/MiddleSection/MiddleSection";
+import AboutText from "../../components/About/AboutText";
 
 function Home() {
   const heroRef = useRef(null);
@@ -25,7 +26,9 @@ function Home() {
         <Hero />
       </section>
 
+      <AboutText />
       <MiddleSection />
+      
     </div>
   );
 }

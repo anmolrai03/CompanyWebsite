@@ -94,22 +94,7 @@ export default function MiddlePage() {
           to your tech needs
         </span>
       </h1>
-
-      <div className="absolute right-12 top-1/2 -translate-y-1/2 space-y-4">
-        <Dot />
-        <Dot active />
-        <Dot />
-      </div>
     </section>
   );
 }
 
-function Dot({ active }) {
-  return (
-    <div
-      className={`w-8 h-8 rounded-full border ${
-        active ? "bg-white/90" : "bg-black/30 border-white/40"
-      } flex items-center justify-center`}
-    />
-  );
-}

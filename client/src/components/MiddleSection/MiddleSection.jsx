@@ -1,12 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
 // your blocks
-import TopPage from "../blocks/TopPage";
 import MiddlePage from "../blocks/MiddlePage";
 import LargeImage from "../blocks/LargeImage";
-import SmallTile from "../blocks/SmallTile";
 import ProductGrid from "../blocks/ProductGrid";
 import Showcase from "../blocks/Showcase";
 import BottomPage from "../blocks/BottomPage";
@@ -47,16 +45,6 @@ export default function App() {
         cover={true}
       />
 
-      
-
-      {/* add class to target */}
-      <SmallTile
-        className="animate-me"
-        title="NOUVELLE COLLECTION"
-        subtitle="Nos produits"
-      />
-
-      
       <Showcase />
       <BottomPage />
     </div>

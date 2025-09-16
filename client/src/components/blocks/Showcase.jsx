@@ -1,5 +1,5 @@
 import React from "react";
-import SmallTile from "./SmallTile";
+import SmallTile from "../utils/ButtonElement/ButtonElement";
 
 export default function Showcase() {
   return (
