@@ -6,6 +6,8 @@ import Hero from "../../components/Hero/Hero";
 import MiddleSection from "../../components/MiddleSection/MiddleSection";
 import AboutText from "../../components/About/AboutText";
 import Services from "../../components/Services/Services";
+import FeatureImage from "../../components/FeatureMedia/FeatureMedia";
+import FeatureMedia from "../../components/FeatureMedia/FeatureMedia";
 
 function Home() {
   const heroRef = useRef(null);
@@ -29,6 +31,7 @@ function Home() {
 
       <AboutText />
       <Services />
+      <FeatureMedia />
       <MiddleSection />
       
     </div>

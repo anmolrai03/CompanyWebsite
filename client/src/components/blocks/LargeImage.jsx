@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/all";
 import gsap from "gsap";
 
-export default function LargeImage({ src, alt = "", height = "140vh", pinSpacer = true, caption = "", showDots = false, cover = true }) {
+export default function LargeImage({ src, alt = "", height = "140vh", pinSpacer = true, caption = "", cover = true }) {
 const wrapRef = useRef(null);
 const imgRef = useRef(null);
 const tlRef = useRef(null);
@@ -63,20 +63,7 @@ return (
 {caption && (
 <div className="absolute left-6 bottom-6 bg-black/60 border border-white/20 px-3 py-1 rounded-md text-sm backdrop-blur-sm">{caption}</div>
 )}
-{showDots && (
-<div className="absolute right-6 top-1/2 transform -translate-y-1/2 flex flex-col gap-4">
-<DotSmall />
-<DotSmall active />
-<DotSmall />
-</div>
-)}
 </section>
 );
 }
 
-
-function DotSmall({ active = false }) {
-return (
-<div className={`w-8 h-8 rounded-full flex items-center justify-center border ${active ? "bg-white/90 border-transparent" : "bg-black/30 border-white/30"}`} aria-hidden />
-);
-}
