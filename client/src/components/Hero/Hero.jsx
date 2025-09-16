@@ -1,43 +1,10 @@
 
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
-import SmallTile from "../blocks/SmallTile";
 
-// Icon components for the buttons
-const PlayIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-  </svg>
-);
+import ButtonElement from "../utils/ButtonElement/ButtonElement";
 
-const PauseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="6" y="4" width="4" height="16"></rect>
-    <rect x="14" y="4" width="4" height="16"></rect>
-  </svg>
-);
-
-const VolumeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-  </svg>
-);
-
-const MuteIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-    <line x1="23" y1="9" x2="17" y2="15"></line>
-    <line x1="17" y1="9" x2="23" y2="15"></line>
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-);
+import {PlayIcon, PauseIcon, MuteIcon, VolumeIcon, CloseIcon} from '../../assets/buttons/buttons.js'
 
 export default function Hero() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -361,7 +328,7 @@ export default function Hero() {
                 playsInline
               />
               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
-                <SmallTile name="Watch Video" onClick={handleOpen} />
+                <ButtonElement name="Watch Video" onClick={handleOpen} />
               </div>
             </div>
           )}
@@ -399,7 +366,7 @@ export default function Hero() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2">
-                  <SmallTile 
+                  <ButtonElement 
                     name={isMuted ? "Unmute" : "Mute"} 
                     icon={isMuted ? MuteIcon : VolumeIcon} 
                     onClick={handleMute} 
@@ -407,15 +374,15 @@ export default function Hero() {
                 </div>
 
                 <div className="flex items-center gap-2 ml-auto">
-                  <SmallTile 
+                  <ButtonElement 
                     name={isVideoPlaying ? "Pause" : "Play"} 
                     icon={isVideoPlaying ? PauseIcon : PlayIcon} 
                     onClick={handlePlayPause} 
                   />
-                  <SmallTile 
+                  <ButtonElement 
                     name={`${formatTime(currentTime)} / ${formatTime(duration)}`} 
                   />
-                  <SmallTile 
+                  <ButtonElement 
                     name="Close" 
                     icon={CloseIcon} 
                     onClick={handleClose} 
