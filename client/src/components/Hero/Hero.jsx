@@ -1,4 +1,3 @@
-
 // import { useRef, useState, useEffect } from "react";
 // import { gsap } from "gsap";
 
@@ -14,6 +13,7 @@
 //   const [duration, setDuration] = useState(0);
 //   const [isMobile, setIsMobile] = useState(false);
 //   const [showControls, setShowControls] = useState(true);
+//   const [isAnimating, setIsAnimating] = useState(false);
 
 //   const videoContainerRef = useRef(null);
 //   const fullscreenVideoRef = useRef(null);
@@ -22,16 +22,22 @@
 //   const controlsTimeoutRef = useRef(null);
 //   const originalOverflowRef = useRef("");
 //   const hiddenElementsRef = useRef([]);
+//   const previewContainerRef = useRef(null);
+//   const animationDataRef = useRef({
+//     originalRect: null,
+//     targetRect: null,
+//     clone: null
+//   });
 
 //   // Check if mobile on mount and resize
 //   useEffect(() => {
 //     const checkMobile = () => {
 //       setIsMobile(window.innerWidth < 768);
 //     };
-    
+
 //     checkMobile();
 //     window.addEventListener('resize', checkMobile);
-    
+
 //     return () => {
 //       window.removeEventListener('resize', checkMobile);
 //     };
@@ -42,89 +48,89 @@
 //     if (isPlaying && !isMobile) {
 //       // Store original overflow value
 //       originalOverflowRef.current = document.body.style.overflow;
-      
+
 //       // Lock scroll
 //       document.body.style.overflow = "hidden";
 //       document.documentElement.style.overflow = "hidden";
-      
+
 //       // Reset the array
 //       hiddenElementsRef.current = [];
-      
+
 //       // Find the React root element (usually has id="root" or similar)
-//       const rootElement = document.getElementById('root') || 
-//                          document.querySelector('[data-reactroot]') || 
+//       const rootElement = document.getElementById('root') ||
+//                          document.querySelector('[data-reactroot]') ||
 //                          document.body.children[0]; // fallback to first child
-      
+
 //       if (rootElement) {
 //         // Hide all direct children of the root element
 //         const rootChildren = rootElement.children;
-        
+
 //         for (let i = 0; i < rootChildren.length; i++) {
 //           const element = rootChildren[i];
-          
+
 //           // Skip if this element contains our video container
-//           if (element === videoContainerRef.current || 
+//           if (element === videoContainerRef.current ||
 //               element.contains(videoContainerRef.current) ||
 //               element.classList.contains('fullscreen-video-container')) {
 //             continue;
 //           }
-          
+
 //           // Store the original visibility state and hide the element
 //           hiddenElementsRef.current.push({
 //             element: element,
 //             originalVisibility: element.style.visibility || ''
 //           });
-          
+
 //           element.style.visibility = "hidden";
 //         }
 //       }
-      
+
 //       // Also hide any direct children of body that aren't the root
 //       const bodyChildren = document.body.children;
 //       for (let i = 0; i < bodyChildren.length; i++) {
 //         const element = bodyChildren[i];
-        
+
 //         // Skip the root element (already handled above) and our video container
-//         if (element === rootElement || 
-//             element === videoContainerRef.current || 
+//         if (element === rootElement ||
+//             element === videoContainerRef.current ||
 //             element.contains(videoContainerRef.current) ||
 //             element.classList.contains('fullscreen-video-container')) {
 //           continue;
 //         }
-        
+
 //         // Store the original visibility state and hide the element
 //         hiddenElementsRef.current.push({
 //           element: element,
 //           originalVisibility: element.style.visibility || ''
 //         });
-        
+
 //         element.style.visibility = "hidden";
 //       }
-      
+
 //       // Also ensure our video container is visible and properly positioned
 //       if (videoContainerRef.current) {
 //         videoContainerRef.current.style.visibility = "visible";
 //         videoContainerRef.current.style.zIndex = "9999";
 //       }
-      
+
 //     } else if (!isPlaying || isMobile) {
 //       // Restore scroll and show all elements
 //       document.body.style.overflow = originalOverflowRef.current || "auto";
 //       document.documentElement.style.overflow = "auto";
-      
+
 //       // Show all previously hidden elements
 //       hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
 //         element.style.visibility = originalVisibility;
 //       });
-      
+
 //       hiddenElementsRef.current = []; // Clear the array
 //     }
-    
+
 //     return () => {
 //       // Cleanup in case component unmounts during fullscreen
 //       document.body.style.overflow = "auto";
 //       document.documentElement.style.overflow = "auto";
-      
+
 //       // Restore all hidden elements
 //       hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
 //         element.style.visibility = originalVisibility;
@@ -137,18 +143,18 @@
 //   useEffect(() => {
 //     if (isPlaying && !isMobile) {
 //       setShowControls(true);
-      
+
 //       // Clear any existing timeout
 //       if (controlsTimeoutRef.current) {
 //         clearTimeout(controlsTimeoutRef.current);
 //       }
-      
+
 //       // Set new timeout to hide controls
 //       controlsTimeoutRef.current = setTimeout(() => {
 //         setShowControls(false);
 //       }, 3000);
 //     }
-    
+
 //     return () => {
 //       if (controlsTimeoutRef.current) {
 //         clearTimeout(controlsTimeoutRef.current);
@@ -161,79 +167,147 @@
 //     const handleMouseMove = () => {
 //       if (isPlaying && !isMobile) {
 //         setShowControls(true);
-        
+
 //         // Reset the timeout to hide controls
 //         if (controlsTimeoutRef.current) {
 //           clearTimeout(controlsTimeoutRef.current);
 //         }
-        
+
 //         controlsTimeoutRef.current = setTimeout(() => {
 //           setShowControls(false);
 //         }, 3000);
 //       }
 //     };
-    
+
 //     window.addEventListener('mousemove', handleMouseMove);
-    
+
 //     return () => {
 //       window.removeEventListener('mousemove', handleMouseMove);
 //     };
 //   }, [isPlaying, isMobile]);
 
 //   // ---- Handlers ----
-//   const handleOpen = () => {
+//   const handleOpen = async () => {
 //     // Only for desktop/tablet
-//     if (!isMobile) {
-//       setIsPlaying(true);
-      
-//       gsap.fromTo(
-//         videoContainerRef.current,
-//         { scale: 0.7, borderRadius: "12px" },
-//         {
-//           scale: 1,
-//           borderRadius: "0px",
-//           duration: 0.8,
-//           ease: "power4.inOut",
-//           onComplete: () => {
+//     if (!isMobile && !isAnimating) {
+//       setIsAnimating(true);
+
+//       // Store original position and dimensions
+//       const previewContainer = previewContainerRef.current;
+//       const originalRect = previewContainer.getBoundingClientRect();
+
+//       // Create a clone of the video for the animation
+//       const clone = previewVideoRef.current.cloneNode(true);
+//       clone.style.position = "fixed";
+//       clone.style.zIndex = "10000";
+//       clone.style.top = `${originalRect.top}px`;
+//       clone.style.left = `${originalRect.left}px`;
+//       clone.style.width = `${originalRect.width}px`;
+//       clone.style.height = `${originalRect.height}px`;
+//       clone.style.objectFit = "cover";
+//       clone.style.borderRadius = "12px";
+//       document.body.appendChild(clone);
+
+//       // Hide the original preview
+//       previewContainer.style.opacity = "0";
+
+//       // Store data for later use
+//       animationDataRef.current = {
+//         originalRect,
+//         targetRect: {
+//           top: 0,
+//           left: 0,
+//           width: window.innerWidth,
+//           height: window.innerHeight
+//         },
+//         clone
+//       };
+
+//       // Animate to fullscreen
+//       gsap.to(clone, {
+//         top: 0,
+//         left: 0,
+//         width: window.innerWidth,
+//         height: window.innerHeight,
+//         borderRadius: 0,
+//         duration: 0.8,
+//         ease: "power2.inOut",
+//         onComplete: () => {
+//           // Remove clone and show the actual fullscreen video
+//           document.body.removeChild(clone);
+//           setIsPlaying(true);
+
+//           // Play the actual video
+//           setTimeout(() => {
 //             if (fullscreenVideoRef.current) {
 //               fullscreenVideoRef.current.play().then(() => {
 //                 setIsVideoPlaying(true);
+//                 setIsAnimating(false);
 //               }).catch(error => {
 //                 console.error("Error playing video:", error);
+//                 setIsAnimating(false);
 //               });
 //             }
-//           },
+//           }, 100);
 //         }
-//       );
+//       });
 //     }
 //   };
 
 //   const handleClose = () => {
 //     // Only for desktop/tablet
-//     if (!isMobile) {
-//       gsap.fromTo(
-//         videoContainerRef.current,
-//         { scale: 1, borderRadius: "0px" },
-//         {
-//           scale: 0.7,
-//           borderRadius: "12px",
-//           duration: 0.8,
-//           ease: "power4.inOut",
-//           onComplete: () => {
-//             setIsPlaying(false);
-//             setIsVideoPlaying(false);
-//             if (fullscreenVideoRef.current) {
-//               fullscreenVideoRef.current.pause();
-//               fullscreenVideoRef.current.currentTime = 0;
-//             }
-//           },
+//     if (!isMobile && !isAnimating) {
+//       setIsAnimating(true);
+
+//       // Pause the video
+//       if (fullscreenVideoRef.current) {
+//         fullscreenVideoRef.current.pause();
+//       }
+
+//       // Create a clone of the video for the animation
+//       const fullscreenVideo = fullscreenVideoRef.current;
+//       const clone = fullscreenVideo.cloneNode(true);
+//       clone.style.position = "fixed";
+//       clone.style.zIndex = "10000";
+//       clone.style.top = "0";
+//       clone.style.left = "0";
+//       clone.style.width = "100%";
+//       clone.style.height = "100%";
+//       clone.style.objectFit = "cover";
+//       document.body.appendChild(clone);
+
+//       // Hide the actual fullscreen video
+//       if (videoContainerRef.current) {
+//         videoContainerRef.current.style.opacity = "0";
+//       }
+
+//       // Animate back to original position
+//       gsap.to(clone, {
+//         top: `${animationDataRef.current.originalRect.top}px`,
+//         left: `${animationDataRef.current.originalRect.left}px`,
+//         width: `${animationDataRef.current.originalRect.width}px`,
+//         height: `${animationDataRef.current.originalRect.height}px`,
+//         borderRadius: "12px",
+//         duration: 0.8,
+//         ease: "power2.inOut",
+//         onComplete: () => {
+//           // Remove clone and reset states
+//           document.body.removeChild(clone);
+//           previewContainerRef.current.style.opacity = "1";
+//           setIsPlaying(false);
+//           setIsVideoPlaying(false);
+//           setIsAnimating(false);
+
+//           if (fullscreenVideoRef.current) {
+//             fullscreenVideoRef.current.currentTime = 0;
+//           }
 //         }
-//       );
+//       });
 //     }
 //   };
 
 //   const handlePlayPause = () => {
-//     if (!isMobile && fullscreenVideoRef.current) {
+//     if (!isMobile && fullscreenVideoRef.current && !isAnimating) {
 //       if (isVideoPlaying) {
 //         fullscreenVideoRef.current.pause();
 //         setIsVideoPlaying(false);
@@ -245,7 +319,7 @@
 //   };
 
 //   const handleMute = () => {
-//     if (!isMobile && fullscreenVideoRef.current) {
+//     if (!isMobile && fullscreenVideoRef.current && !isAnimating) {
 //       fullscreenVideoRef.current.muted = !isMuted;
 //       setIsMuted(!isMuted);
 //     }
@@ -260,7 +334,7 @@
 //   // ---- Escape key (desktop only) ----
 //   useEffect(() => {
 //     const onKeyDown = (e) => {
-//       if (!isMobile && isPlaying) {
+//       if (!isMobile && isPlaying && !isAnimating) {
 //         if (e.key === "Escape") {
 //           handleClose();
 //         }
@@ -275,7 +349,7 @@
 //     };
 //     window.addEventListener("keydown", onKeyDown);
 //     return () => window.removeEventListener("keydown", onKeyDown);
-//   }, [isVideoPlaying, isMuted, isPlaying, isMobile]);
+//   }, [isVideoPlaying, isMuted, isPlaying, isMobile, isAnimating]);
 
 //   // ---- Video listeners for desktop ----
 //   useEffect(() => {
@@ -317,17 +391,20 @@
 
 //           {/* Preview state */}
 //           {!isPlaying && (
-//             <div className="relative z-10 w-[60%] max-w-3xl aspect-video bg-white justify-center items-center flex rounded-lg">
+//             <div
+//               ref={previewContainerRef}
+//               className="relative z-10 w-[60%] max-w-3xl aspect-video bg-white justify-center items-center flex rounded-lg overflow-hidden"
+//             >
 //               <video
 //                 ref={previewVideoRef}
-//                 className="w-1/2 h- 1/2 object-cover rounded-lg shadow-lg"
+//                 className="w-full h-full object-cover"
 //                 src="/hero-video.mp4"
 //                 muted
 //                 autoPlay
 //                 loop
 //                 playsInline
 //               />
-//               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+//               <div className="absolute inset-0 flex items-center justify-center bg-black/30">
 //                 <ButtonElement name="Watch Video" onClick={handleOpen} />
 //               </div>
 //             </div>
@@ -337,13 +414,12 @@
 //           <div
 //             ref={videoContainerRef}
 //             className="fullscreen-video-container fixed inset-0 z-[9999] bg-transparent flex items-center justify-center"
-//             style={{ 
+//             style={{
 //               display: isPlaying ? "flex" : "none",
-//               left: isPlaying ? "0" : "-100vw",
-//               top: isPlaying ? "0" : "-100vh"
+//               opacity: isPlaying ? 1 : 0
 //             }}
 //             onClick={(e) => {
-//               if (e.target === videoContainerRef.current || e.target === fullscreenVideoRef.current) {
+//               if ((e.target === videoContainerRef.current || e.target === fullscreenVideoRef.current) && !isAnimating) {
 //                 handlePlayPause();
 //               }
 //             }}
@@ -361,31 +437,31 @@
 
 //             {/* Desktop Controls Overlay */}
 //             {showControls && (
-//               <div 
+//               <div
 //                 className="absolute bottom-8 left-8 right-8 flex items-center justify-between gap-2"
 //                 onClick={(e) => e.stopPropagation()}
 //               >
 //                 <div className="flex items-center gap-2">
-//                   <ButtonElement 
-//                     name={isMuted ? "Unmute" : "Mute"} 
-//                     icon={isMuted ? MuteIcon : VolumeIcon} 
-//                     onClick={handleMute} 
+//                   <ButtonElement
+//                     name={isMuted ? "Unmute" : "Mute"}
+//                     icon={isMuted ? MuteIcon : VolumeIcon}
+//                     onClick={handleMute}
 //                   />
 //                 </div>
 
 //                 <div className="flex items-center gap-2 ml-auto">
-//                   <ButtonElement 
-//                     name={isVideoPlaying ? "Pause" : "Play"} 
-//                     icon={isVideoPlaying ? PauseIcon : PlayIcon} 
-//                     onClick={handlePlayPause} 
+//                   <ButtonElement
+//                     name={isVideoPlaying ? "Pause" : "Play"}
+//                     icon={isVideoPlaying ? PauseIcon : PlayIcon}
+//                     onClick={handlePlayPause}
 //                   />
-//                   <ButtonElement 
-//                     name={`${formatTime(currentTime)} / ${formatTime(duration)}`} 
+//                   <ButtonElement
+//                     name={`${formatTime(currentTime)} / ${formatTime(duration)}`}
 //                   />
-//                   <ButtonElement 
-//                     name="Close" 
-//                     icon={CloseIcon} 
-//                     onClick={handleClose} 
+//                   <ButtonElement
+//                     name="Close"
+//                     icon={CloseIcon}
+//                     onClick={handleClose}
 //                   />
 //                 </div>
 //               </div>
@@ -393,7 +469,7 @@
 
 //             {/* Show play button in center when paused and controls are hidden */}
 //             {!isVideoPlaying && !showControls && (
-//               <div 
+//               <div
 //                 className="absolute inset-0 flex items-center justify-center"
 //                 onClick={handlePlayPause}
 //               >
@@ -419,10 +495,10 @@
 //             loop
 //             playsInline
 //           />
-          
+
 //           {/* Dark overlay for better text readability */}
 //           <div className="absolute inset-0 bg-black/40 z-5"></div>
-          
+
 //           {/* Mobile content overlay */}
 //           <div className="relative z-10 text-center text-white px-6">
 //             <h1 className="text-4xl md:text-6xl font-bold mb-4">
@@ -435,7 +511,7 @@
 //               Experience our latest development showcase featuring innovative solutions and creative implementations.
 //             </p>
 //           </div>
-          
+
 //           {/* Scroll indicator */}
 //           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
 //             <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
@@ -448,16 +524,18 @@
 //   );
 // }
 
-
-
-
-
 import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 
 import ButtonElement from "../utils/ButtonElement/ButtonElement";
 
-import {PlayIcon, PauseIcon, MuteIcon, VolumeIcon, CloseIcon} from '../../assets/buttons/buttons.js'
+import {
+  PlayIcon,
+  PauseIcon,
+  MuteIcon,
+  VolumeIcon,
+  CloseIcon,
+} from "../../assets/buttons/buttons.js";
 
 export default function Hero() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -485,12 +563,12 @@ export default function Hero() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
+    window.addEventListener("resize", checkMobile);
+
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -537,39 +615,42 @@ export default function Hero() {
   // Animate hero section when it enters viewport
   useEffect(() => {
     if (!isInView) return;
-    
+
     const direction = scrollDirection === "down" ? 1 : -1;
     const initialY = direction === 1 ? 100 : -100;
-    
+
     // Animate the entire hero section
-    gsap.fromTo(heroSectionRef.current, 
+    gsap.fromTo(
+      heroSectionRef.current,
       {
         y: initialY,
-        opacity: 0
+        opacity: 0,
       },
       {
         y: 0,
         opacity: 1,
         duration: 1.2,
-        ease: "power3.out"
+        ease: "power3.out",
       }
     );
-    
+
     // If on mobile, also animate the content
     if (isMobile) {
-      const mobileContent = heroSectionRef.current.querySelector('.relative.z-10');
+      const mobileContent =
+        heroSectionRef.current.querySelector(".relative.z-10");
       if (mobileContent) {
-        gsap.fromTo(mobileContent, 
+        gsap.fromTo(
+          mobileContent,
           {
             y: initialY * 0.5,
-            opacity: 0
+            opacity: 0,
           },
           {
             y: 0,
             opacity: 1,
             duration: 1,
             ease: "power3.out",
-            delay: 0.2
+            delay: 0.2,
           }
         );
       }
@@ -581,89 +662,93 @@ export default function Hero() {
     if (isPlaying && !isMobile) {
       // Store original overflow value
       originalOverflowRef.current = document.body.style.overflow;
-      
+
       // Lock scroll
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
-      
+
       // Reset the array
       hiddenElementsRef.current = [];
-      
+
       // Find the React root element (usually has id="root" or similar)
-      const rootElement = document.getElementById('root') || 
-                         document.querySelector('[data-reactroot]') || 
-                         document.body.children[0]; // fallback to first child
-      
+      const rootElement =
+        document.getElementById("root") ||
+        document.querySelector("[data-reactroot]") ||
+        document.body.children[0]; // fallback to first child
+
       if (rootElement) {
         // Hide all direct children of the root element
         const rootChildren = rootElement.children;
-        
+
         for (let i = 0; i < rootChildren.length; i++) {
           const element = rootChildren[i];
-          
+
           // Skip if this element contains our video container
-          if (element === videoContainerRef.current || 
-              element.contains(videoContainerRef.current) ||
-              element.classList.contains('fullscreen-video-container')) {
+          if (
+            element === videoContainerRef.current ||
+            element.contains(videoContainerRef.current) ||
+            element.classList.contains("fullscreen-video-container")
+          ) {
             continue;
           }
-          
+
           // Store the original visibility state and hide the element
           hiddenElementsRef.current.push({
             element: element,
-            originalVisibility: element.style.visibility || ''
+            originalVisibility: element.style.visibility || "",
           });
-          
+
           element.style.visibility = "hidden";
         }
       }
-      
+
       // Also hide any direct children of body that aren't the root
       const bodyChildren = document.body.children;
       for (let i = 0; i < bodyChildren.length; i++) {
         const element = bodyChildren[i];
-        
+
         // Skip the root element (already handled above) and our video container
-        if (element === rootElement || 
-            element === videoContainerRef.current || 
-            element.contains(videoContainerRef.current) ||
-            element.classList.contains('fullscreen-video-container')) {
+        if (
+          element === rootElement ||
+          element === videoContainerRef.current ||
+          element.contains(videoContainerRef.current) ||
+          element.classList.contains("fullscreen-video-container")
+        ) {
           continue;
         }
-        
+
         // Store the original visibility state and hide the element
         hiddenElementsRef.current.push({
           element: element,
-          originalVisibility: element.style.visibility || ''
+          originalVisibility: element.style.visibility || "",
         });
-        
+
         element.style.visibility = "hidden";
       }
-      
+
       // Also ensure our video container is visible and properly positioned
       if (videoContainerRef.current) {
         videoContainerRef.current.style.visibility = "visible";
         videoContainerRef.current.style.zIndex = "9999";
       }
-      
     } else if (!isPlaying || isMobile) {
       // Restore scroll and show all elements
       document.body.style.overflow = originalOverflowRef.current || "auto";
       document.documentElement.style.overflow = "auto";
-      
+
       // Show all previously hidden elements
       hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
         element.style.visibility = originalVisibility;
       });
-      
+
       hiddenElementsRef.current = []; // Clear the array
     }
-    
+
     return () => {
       // Cleanup in case component unmounts during fullscreen
       document.body.style.overflow = "auto";
       document.documentElement.style.overflow = "auto";
-      
+
       // Restore all hidden elements
       hiddenElementsRef.current.forEach(({ element, originalVisibility }) => {
         element.style.visibility = originalVisibility;
@@ -676,18 +761,18 @@ export default function Hero() {
   useEffect(() => {
     if (isPlaying && !isMobile) {
       setShowControls(true);
-      
+
       // Clear any existing timeout
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
       }
-      
+
       // Set new timeout to hide controls
       controlsTimeoutRef.current = setTimeout(() => {
         setShowControls(false);
       }, 3000);
     }
-    
+
     return () => {
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
@@ -700,31 +785,31 @@ export default function Hero() {
     const handleMouseMove = () => {
       if (isPlaying && !isMobile) {
         setShowControls(true);
-        
+
         // Reset the timeout to hide controls
         if (controlsTimeoutRef.current) {
           clearTimeout(controlsTimeoutRef.current);
         }
-        
+
         controlsTimeoutRef.current = setTimeout(() => {
           setShowControls(false);
         }, 3000);
       }
     };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    
+
+    window.addEventListener("mousemove", handleMouseMove);
+
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isPlaying, isMobile]);
 
-  // ---- Handlers ----
+  // // ---- Handlers ----
   const handleOpen = () => {
     // Only for desktop/tablet
     if (!isMobile) {
       setIsPlaying(true);
-      
+
       gsap.fromTo(
         videoContainerRef.current,
         { scale: 0.7, borderRadius: "12px" },
@@ -836,7 +921,7 @@ export default function Hero() {
   }, [isPlaying, isMobile]);
 
   return (
-    <section 
+    <section
       ref={heroSectionRef}
       className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden pt-12"
     >
@@ -879,13 +964,16 @@ export default function Hero() {
           <div
             ref={videoContainerRef}
             className="fullscreen-video-container fixed inset-0 z-[9999] bg-transparent flex items-center justify-center"
-            style={{ 
+            style={{
               display: isPlaying ? "flex" : "none",
               left: isPlaying ? "0" : "-100vw",
-              top: isPlaying ? "0" : "-100vh"
+              top: isPlaying ? "0" : "-100vh",
             }}
             onClick={(e) => {
-              if (e.target === videoContainerRef.current || e.target === fullscreenVideoRef.current) {
+              if (
+                e.target === videoContainerRef.current ||
+                e.target === fullscreenVideoRef.current
+              ) {
                 handlePlayPause();
               }
             }}
@@ -903,31 +991,33 @@ export default function Hero() {
 
             {/* Desktop Controls Overlay */}
             {showControls && (
-              <div 
+              <div
                 className="absolute bottom-8 left-8 right-8 flex items-center justify-between gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-2">
-                  <ButtonElement 
-                    name={isMuted ? "Unmute" : "Mute"} 
-                    icon={isMuted ? MuteIcon : VolumeIcon} 
-                    onClick={handleMute} 
+                  <ButtonElement
+                    name={isMuted ? "Unmute" : "Mute"}
+                    icon={isMuted ? MuteIcon : VolumeIcon}
+                    onClick={handleMute}
                   />
                 </div>
 
                 <div className="flex items-center gap-2 ml-auto">
-                  <ButtonElement 
-                    name={isVideoPlaying ? "Pause" : "Play"} 
-                    icon={isVideoPlaying ? PauseIcon : PlayIcon} 
-                    onClick={handlePlayPause} 
+                  <ButtonElement
+                    name={isVideoPlaying ? "Pause" : "Play"}
+                    icon={isVideoPlaying ? PauseIcon : PlayIcon}
+                    onClick={handlePlayPause}
                   />
-                  <ButtonElement 
-                    name={`${formatTime(currentTime)} / ${formatTime(duration)}`} 
+                  <ButtonElement
+                    name={`${formatTime(currentTime)} / ${formatTime(
+                      duration
+                    )}`}
                   />
-                  <ButtonElement 
-                    name="Close" 
-                    icon={CloseIcon} 
-                    onClick={handleClose} 
+                  <ButtonElement
+                    name="Close"
+                    icon={CloseIcon}
+                    onClick={handleClose}
                   />
                 </div>
               </div>
@@ -935,7 +1025,7 @@ export default function Hero() {
 
             {/* Show play button in center when paused and controls are hidden */}
             {!isVideoPlaying && !showControls && (
-              <div 
+              <div
                 className="absolute inset-0 flex items-center justify-center"
                 onClick={handlePlayPause}
               >
@@ -961,23 +1051,22 @@ export default function Hero() {
             loop
             playsInline
           />
-          
+
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40 z-5"></div>
-          
+
           {/* Mobile content overlay */}
           <div className="relative z-10 text-center text-white px-6">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              DEV SPHERE
-            </h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">DEV SPHERE</h1>
             <h2 className="text-xl md:text-2xl font-light mb-8">
               Memory Collection 2025
             </h2>
             <p className="text-sm md:text-base opacity-80 max-w-md mx-auto leading-relaxed">
-              Experience our latest development showcase featuring innovative solutions and creative implementations.
+              Experience our latest development showcase featuring innovative
+              solutions and creative implementations.
             </p>
           </div>
-          
+
           {/* Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
             <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">

@@ -31,9 +31,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-white font-sans">
       {/* <TopPage /> */}
-      <MiddlePage />
+      {/* <MiddlePage /> */}
 
-      <ProductGrid />
+      {/* <ProductGrid /> */}
 
       <LargeImage
         src="https://imgs.search.brave.com/md2jlyFiuXs1zxy-dUYFMaUYYzqRW4-6z2GVjnV4Vh0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzM5LzMx/Lzg2LzM5MzE4Njky/YmFmN2ZhYWRlMTNk/MWQ1ZTJjOWJhMDg5/LmpwZw"

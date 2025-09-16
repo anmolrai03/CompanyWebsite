@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import Hero from "../../components/Hero/Hero";
 import MiddleSection from "../../components/MiddleSection/MiddleSection";
 import AboutText from "../../components/About/AboutText";
+import Services from "../../components/Services/Services";
 
 function Home() {
   const heroRef = useRef(null);
@@ -22,11 +23,12 @@ function Home() {
 
   return (
     <div className="w-full h-max overflow-hidden">
-      <section ref={heroRef} className="w-full h-max">
+      <section className="w-full h-max">
         <Hero />
       </section>
 
       <AboutText />
+      <Services />
       <MiddleSection />
       
     </div>
