@@ -9,99 +9,118 @@
 //   const sectionRefs = useRef([]);
 //   const mediaRefs = useRef([]);
 
+//   // Helper to add refs safely
+//   const addToRefs = (el, refArray) => {
+//     if (el && !refArray.current.includes(el)) {
+//       refArray.current.push(el);
+//     }
+//   };
+
 //   useEffect(() => {
 //     sectionRefs.current.forEach((section, index) => {
-//       const media = mediaRefs.current[index];
+//       const mediaElements = mediaRefs.current[index];
 
-//       // Parallax animation for image and video
-//       gsap.fromTo(
-//         media,
-//         {
-//           yPercent: -20, // Start slightly above
-//           scale: 1.1, // Slightly zoomed for effect
-//         },
-//         {
-//           yPercent: 20, // Move downward for parallax
-//           scale: 1,
-//           ease: "none", // Linear for smooth parallax
-//           scrollTrigger: {
-//             trigger: section,
-//             start: "top bottom", // Start when section top hits viewport bottom
-//             end: "bottom top", // End when section bottom hits viewport top
-//             scrub: true, // Sync with scroll
-//             toggleActions: "play none none reverse", // Reverse on scroll back
-//           },
-//         }
-//       );
+//       // Handle multiple media elements (video or images) in a section
+//       const medias = Array.isArray(mediaElements) ? mediaElements : [mediaElements];
 
-//       // Video playback control
-//       if (media.tagName === "VIDEO") {
-//         ScrollTrigger.create({
-//           trigger: section,
-//           start: "top bottom",
-//           end: "bottom top",
-//           onEnter: () => media.play(),
-//           onLeave: () => media.pause(),
-//           onEnterBack: () => media.play(),
-//           onLeaveBack: () => media.pause(),
-//         });
+//       medias.forEach((media, mediaIndex) => {
+//         if (!media) return;
 
-//         // Ensure the video pauses at the end to show the final frame
-//         media.addEventListener("ended", () => {
-//           media.pause();
-//           // Optionally, set currentTime to the end to ensure the final frame is displayed
-//           media.currentTime = media.duration;
-//         });
-//       }
-//     });
-
-//     // Cleanup ScrollTriggers and event listeners on component unmount
-//     return () => {
-//       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-//       mediaRefs.current.forEach((media) => {
-//         if (media.tagName === "VIDEO") {
-//           media.removeEventListener("ended", () => {});
+//         // Parallax animation for the image section
+//         if (index === 0) {
+//           // Background image (center): move upward with scale effect
+//           if (mediaIndex === 0) {
+//             gsap.fromTo(
+//               media,
+//               { yPercent: 30, scale: 1.2 },
+//               {
+//                 yPercent: -30,
+//                 scale: 1,
+//                 ease: "none",
+//                 scrollTrigger: {
+//                   trigger: section,
+//                   start: "top bottom",
+//                   end: "bottom top",
+//                   scrub: true,
+//                 },
+//               }
+//             );
+//           } 
+//           // Left image: move further left and slightly up
+//           else if (mediaIndex === 1) {
+//             gsap.fromTo(
+//               media,
+//               { xPercent: 0, yPercent: 0 }, // Initial position
+//               {
+//                 xPercent: -50, // Increased from -30 to -50 for more movement
+//                 yPercent: -15, // Slightly increased vertical movement
+//                 ease: "none",
+//                 scrollTrigger: {
+//                   trigger: section,
+//                   start: "top bottom",
+//                   end: "bottom top",
+//                   scrub: true,
+//                 },
+//               }
+//             );
+//           } 
+//           // Right image: move further right and slightly up
+//           else if (mediaIndex === 2) {
+//             gsap.fromTo(
+//               media,
+//               { xPercent: 0, yPercent: 0 }, // Initial position
+//               {
+//                 xPercent: 50, // Increased from 30 to 50 for more movement
+//                 yPercent: -15, // Slightly increased vertical movement
+//                 ease: "none",
+//                 scrollTrigger: {
+//                   trigger: section,
+//                   start: "top bottom",
+//                   end: "bottom top",
+//                   scrub: true,
+//                 },
+//               }
+//             );
+//           }
 //         }
 //       });
+//     });
+
+//     // Cleanup ScrollTriggers on component unmount
+//     return () => {
+//       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 //     };
 //   }, []);
 
 //   return (
 //     <div className="flex flex-col">
-//       {/* First Image Section (Video's Starting Frame) */}
+//       {/* Image Section (Three Images with Parallax) */}
 //       <section
-//         ref={(el) => (sectionRefs.current[0] = el)}
-//         className="w-screen h-[120vh] overflow-hidden"
+//         ref={(el) => addToRefs(el, sectionRefs)}
+//         className="w-screen h-[150vh] overflow-hidden relative"
 //       >
+//         {/* Background Image (Center) */}
 //         <div
-//           ref={(el) => (mediaRefs.current[0] = el)}
-//           className="w-full h-full bg-cover bg-center"
+//           ref={(el) => addToRefs(el, mediaRefs)}
+//           className="w-full h-full bg-cover bg-center absolute top-0 left-0 z-10"
 //           style={{
-//             backgroundImage: `url('/path/to/video-start-frame.jpg')`,
+//             backgroundImage: `url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
 //           }}
 //         />
-//       </section>
-
-//       {/* Video Section (Transitions to Final Frame) */}
-//       <section
-//         ref={(el) => (sectionRefs.current[1] = el)}
-//         className="w-screen h-[120vh] overflow-hidden relative"
-//       >
-//         <video
-//           ref={(el) => (mediaRefs.current[1] = el)}
-//           className="w-full h-full object-cover"
-//           muted
-//           playsInline
-//           loop={false}
-//         >
-//           <source src="/path/to/your-video.mp4" type="video/mp4" />
-//           Your browser does not support the video tag.
-//         </video>
-//         {/* Overlay Image for Final Frame */}
+//         {/* Left Image */}
 //         <div
-//           className="absolute inset-0 w-full h-full bg-cover bg-center opacity-0"
+//           ref={(el) => addToRefs(el, mediaRefs)}
+//           className="w-[35%] h-[50%] bg-cover bg-center absolute top-[25%] left-[10%] z-20 rounded-lg shadow-2xl"
 //           style={{
-//             backgroundImage: `url('/path/to/video-end-frame.jpg')`,
+//             backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')`,
+//           }}
+//         />
+//         {/* Right Image */}
+//         <div
+//           ref={(el) => addToRefs(el, mediaRefs)}
+//           className="w-[35%] h-[50%] bg-cover bg-center absolute top-[25%] right-[10%] z-20 rounded-lg shadow-2xl"
+//           style={{
+//             backgroundImage: `url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')`,
 //           }}
 //         />
 //       </section>
@@ -180,41 +199,6 @@ function FeatureMedia() {
           className="w-full h-full bg-cover bg-center"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
-          }}
-        />
-      </section>
-
-      {/* Video Section */}
-      <section
-        ref={(el) => (sectionRefs.current[1] = el)}
-        className="w-screen h-[120vh] overflow-hidden"
-      >
-        <video
-          ref={(el) => (mediaRefs.current[1] = el)}
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          playsInline
-          loop={false}
-        >
-          <source
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
-      </section>
-
-      {/* Final Image Section (Video's Final Frame) */}
-      <section
-        ref={(el) => (sectionRefs.current[2] = el)}
-        className="w-screen h-[120vh] overflow-hidden"
-      >
-        <div
-          ref={(el) => (mediaRefs.current[2] = el)}
-          className="w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
           }}
         />
       </section>
