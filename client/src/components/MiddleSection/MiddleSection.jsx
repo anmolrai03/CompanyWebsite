@@ -45,7 +45,7 @@ export default function App() {
         cover={true}
       /> */}
 
-      <Showcase />
+      {/* <Showcase /> */}
       <BottomPage />
     </div>
   );

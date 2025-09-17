@@ -2,6 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { useInView } from "react-intersection-observer";
+import { useNavigate } from "react-router-dom";
 
 function ServiceCard({ service, index }) {
   const cardRef = useRef();
@@ -13,23 +14,24 @@ function ServiceCard({ service, index }) {
   const [isMobile, setIsMobile] = useState(false);
   const animationFrameRef = useRef(null);
   const intervalRef = useRef(null);
+  const navigate = useNavigate();
 
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Intersection Observer for entrance animations
   const { ref: inViewRef, inView } = useInView({
     threshold: 0.2,
-    triggerOnce: false
+    triggerOnce: false,
   });
 
   // Set up the ref for intersection observer
@@ -43,24 +45,23 @@ function ServiceCard({ service, index }) {
     if (!card) return;
 
     if (inView) {
-      // Entrance animation: slide up from bottom with delay based on index
-      gsap.fromTo(card,
+      gsap.fromTo(
+        card,
         { y: 100, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.8,
           ease: "power2.out",
-          delay: index * 0.2 // Delay each card by 0.2s for line-by-line effect
+          delay: index * 0.2,
         }
       );
     } else {
-      // Exit animation: slide down
       gsap.to(card, {
         y: 50,
         opacity: 0,
         duration: 0.5,
-        ease: "power2.in"
+        ease: "power2.in",
       });
     }
   }, [inView, index]);
@@ -69,46 +70,44 @@ function ServiceCard({ service, index }) {
     const image = imageRef.current;
     const imageContainer = imageContainerRef.current;
 
-    // Set up the zoom animation for the image container (desktop only)
     if (!isMobile) {
       if (isHovered) {
         gsap.to(imageContainer, {
           scale: 1.05,
           duration: 0.8,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       } else {
         gsap.to(imageContainer, {
           scale: 1,
           duration: 0.6,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       }
     }
 
     const animateImageChange = () => {
-      // Slide up animation for image change
       gsap.fromTo(
         image,
-        { 
-          y: 40, 
+        {
+          y: 40,
           opacity: 0,
-          scale: isMobile ? 1 : 1.1
+          scale: isMobile ? 1 : 1.1,
         },
-        { 
-          y: 0, 
+        {
+          y: 0,
           opacity: 1,
           scale: isMobile ? 1 : 1.05,
-          duration: 0.8, 
+          duration: 0.8,
           ease: "power2.out",
           onComplete: () => {
             if (isHovered && !isMobile) {
               gsap.to(image, {
                 scale: 1.05,
-                duration: 0.1
+                duration: 0.1,
               });
             }
-          }
+          },
         }
       );
     };
@@ -117,23 +116,23 @@ function ServiceCard({ service, index }) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      
+
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
 
       if (isMobile || !isHovered) {
         let currentProgress = 0;
-        
+
         intervalRef.current = setInterval(() => {
           currentProgress += 1;
-          
+
           if (currentProgress >= 100) {
             setCurrentImageIndex((prev) => (prev + 1) % service.images.length);
             animateImageChange();
             currentProgress = 0;
           }
-          
+
           setProgress(currentProgress);
         }, 20);
       } else if (isHovered && !isMobile) {
@@ -187,12 +186,20 @@ function ServiceCard({ service, index }) {
     }
   };
 
+  const handleClick = () => {
+    if (service.link) {
+      navigate(service.link);
+    }
+  };
+
   return (
     <article
       ref={cardRef}
-      className="bg-white rounded-lg overflow-hidden relative border border-gray-200 shadow-sm cursor-pointer group mb-8"
+      className="bg-white rounded-lg overflow-hidden relative border shadow-sm cursor-pointer group mb-8"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      {...(service.href ? { href: service.href } : {})}
     >
       {(isMobile || isHovered) && (
         <div className="absolute top-4 w-full h-[3px] flex z-20 px-4 gap-x-3">
@@ -223,7 +230,7 @@ function ServiceCard({ service, index }) {
         ))}
       </div>
 
-      <div 
+      <div
         ref={imageContainerRef}
         className="aspect-[4/5] relative overflow-hidden"
       >
@@ -236,11 +243,28 @@ function ServiceCard({ service, index }) {
         />
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white/95 p-4 py-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-        <h3 className="font-mono text-sm tracking-wide text-gray-800 text-center">
+      <div 
+        className={`
+          absolute bottom-0 left-0 right-0 py-6 ${isMobile ? "bg-black px-2" : " bg-white/95  transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 p-4"} 
+        `}>
+        <h3 className={`font-mono text-sm tracking-wide ${isMobile ? "text-white": "text-gray-800"} text-center`}>
           {service.name}
         </h3>
       </div>
+
+      {/* {isMobile ? (
+        <div className="absolute bottom-0 left-0 right-0 bg-black p-4 py-6">
+          <h3 className="font-mono text-sm tracking-wide text-white text-center">
+            {service.name}
+          </h3>
+        </div>
+      ) : (
+        <div className="absolute bottom-0 left-0 right-0 bg-white/95 p-4 py-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+          <h3 className="font-mono text-sm tracking-wide text-gray-800 text-center">
+            {service.name}
+          </h3>
+        </div>
+      )} */}
     </article>
   );
 }

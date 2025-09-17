@@ -65,7 +65,7 @@ function FeatureMedia() {
       {/* Image Section with Enhanced Parallax */}
       <section
         ref={(el) => addToRefs(el, sectionRefs)}
-        className="w-screen h-[130vh] overflow-hidden relative"
+        className="w-screen h-[180vh] overflow-hidden relative"
       >
         <div
           ref={(el) => addToRefs(el, mediaRefs)}

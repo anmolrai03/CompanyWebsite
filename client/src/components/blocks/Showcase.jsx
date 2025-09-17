@@ -1,5 +1,5 @@
 import React from "react";
-import SmallTile from "../utils/ButtonElement/ButtonElement";
+import ButtonElement from "../utils/ButtonElement/ButtonElement";
 
 export default function Showcase() {
   return (
@@ -13,9 +13,9 @@ export default function Showcase() {
             Une collection "Memory" disponible dès maintenant
           </p>
           <div className="mt-8 flex gap-4">
-            <SmallTile>👕</SmallTile>
-            <SmallTile>🧥</SmallTile>
-            <SmallTile>🎩</SmallTile>
+            <ButtonElement name="👕" />
+            <ButtonElement name="🧥" />
+            <ButtonElement name="🎩" />
           </div>
         </div>
         <div className="col-span-1">
