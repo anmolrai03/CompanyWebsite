@@ -46,7 +46,7 @@ export default function App() {
       /> */}
 
       {/* <Showcase /> */}
-      <BottomPage />
+      {/* <BottomPage /> */}
     </div>
   );
 }

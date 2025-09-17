@@ -9,6 +9,7 @@ import Services from "../../components/Services/Services";
 import FeatureImage from "../../components/FeatureMedia/FeatureMedia";
 import FeatureMedia from "../../components/FeatureMedia/FeatureMedia";
 import SampleWork from "../../components/SampleWork/SampleWork";
+import SocialHandle from "../../components/SocialHandle/SocialHandle";
 
 function Home() {
   const heroRef = useRef(null);
@@ -34,7 +35,8 @@ function Home() {
       <Services />
       <FeatureMedia />
       <SampleWork />
-      <MiddleSection />
+      <SocialHandle />
+      {/* <MiddleSection /> */}
       
     </div>
   );

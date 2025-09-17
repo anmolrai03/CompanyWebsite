@@ -90,11 +90,11 @@ function ButtonElement({ name, icon: Icon, onClick, isActive = false }) {
       ></span>
 
       {/* Content */}
-      <span className={`relative text-white font-medium text-sm md:text-base flex items-center justify-center gap-1
-        ${Icon ? "md:px-2 py-1 md:py-2": ""}`}>
-        {Icon ? <Icon size={20} aria-hidden="true" /> : null}
+      <span className={`relative text-white px-2 font-medium text-sm md:text-base flex items-center justify-center gap-1 ${Icon ? "py-1": ""}`}>
+        {Icon ? <Icon size={18} aria-hidden="true" /> : null}
         {name}
       </span>
+      
     </div>
   );
 }
