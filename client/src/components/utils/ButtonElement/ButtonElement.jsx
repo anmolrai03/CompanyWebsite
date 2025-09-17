@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
-function ButtonElement({ name, icon: Icon, onClick, isActive = false }) {
+function ButtonElement({ name, icon: Icon, onClick, isActive = false}) {
   const tileRef = useRef(null);
   const bgRef = useRef(null);
   const animation = useRef(null);
@@ -90,7 +90,7 @@ function ButtonElement({ name, icon: Icon, onClick, isActive = false }) {
       ></span>
 
       {/* Content */}
-      <span className={`relative text-white px-2 font-medium text-sm md:text-base flex items-center justify-center gap-1 ${Icon ? "py-1": ""}`}>
+      <span className={`relative text-white px-2 font-medium text-sm md:text-base flex items-center justify-center gap-1 ${Icon ? "": ""}`}>
         {Icon ? <Icon size={18} aria-hidden="true" /> : null}
         {name}
       </span>
