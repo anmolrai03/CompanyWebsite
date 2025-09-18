@@ -61,9 +61,11 @@ import LoadingContextProvider from "./context/LoadingContext/LoadingContextProvi
 //COMPONENTS IMPORT
 import Layout from "./Layout";
 import Loader from "./components/Loader/Loader";
+// import Contact from "./pages/Contact/Contact";
 
 // LAZY IMPORTS
 // const Home = lazy( () => import('./pages/Home/Home'))
+const Contact = lazy(() => import("./pages/Contact/Contact"));
 
 // // Add artificial delay for testing the loader
 const lazyWithDelay = (importFn, delay = 2000) => {
@@ -96,15 +98,15 @@ function Routes() {
   const router = createBrowserRouter(
     createRoutesFromChildren(
       <>
-        <Route path="/pages/" element={<Layout />}>
-          {/* <Route 
-        index
-        element={
-          <Suspense fallback={<LoadingAwareLoader />}> 
-            <Home />
-          </Suspense>
-        }
-      /> */}
+        <Route path="/pages" element={<Layout />}>
+          <Route
+            path="contact"
+            element={
+              <Suspense fallback={<LoadingAwareLoader />}>
+                <Contact />
+              </Suspense>
+            }
+          />
         </Route>
         ,
         <Route

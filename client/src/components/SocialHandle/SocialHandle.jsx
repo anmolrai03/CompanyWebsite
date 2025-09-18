@@ -1,6 +1,7 @@
 import React from "react";
 import ButtonElement from "../utils/ButtonElement/ButtonElement";
 import { MoveUpRight, CornerDownRight } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 export default function SocialHandle() {
   return (
@@ -83,12 +84,12 @@ export default function SocialHandle() {
             </div>
 
             {/* CONTACT BUTTON SECTION */}
-            <div className="flex-1 flex justify-end">
+            <NavLink to="/pages/contact" className="flex-1 flex justify-end">
               <div className="flex w-full h-full items-center gap-3 justify-center">
                 <ButtonElement icon={CornerDownRight} />
                 <ButtonElement name="Contact Us" />
               </div>
-            </div>
+            </NavLink>
 
           </div>
         </div>
@@ -161,12 +162,12 @@ export default function SocialHandle() {
           {/* SOCIAL + MORE INFO INLINE SECTION ends here*/}
 
           {/* CONTACT US BUTTON */}
-          <div className="flex-1">
+          <NavLink to="/pages/contact" className="flex-1">
             <button className="w-full bg-black/60 border border-white/20 px-4 py-4 rounded-md hover:bg-white/10 transition flex items-center justify-center gap-2 text-white/80 hover:text-white">
               <CornerDownRight size={16} />
               <span className="text-sm  text-kite">Contact us</span>
             </button>
-          </div>
+          </NavLink>
         </div>
         {/* MOBILE LAYOUT SECTION ENDS HERE*/}
 
