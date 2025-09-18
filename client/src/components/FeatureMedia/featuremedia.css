@@ -1,0 +1,23 @@
+/* Basic clip-path like About.jsx */
+.mask-clip-path {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Feature image container styling */
+.feature-image {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 20;
+  height: 60vh;
+  width: 24rem; /* ~96 in Tailwind */
+  transform: translateX(-50%);
+  overflow: hidden;
+  border-radius: 1.5rem; /* rounded-3xl */
+}
+
+@media (min-width: 768px) {
+  .feature-image {
+    width: 30vw;
+  }
+}
