@@ -107,7 +107,7 @@ function FeatureMedia () {
   });
 
   return (
-    <div id="feature-media" className="min-h-screen w-screen pt-14 border-t border-gray-300/30">
+    <div id="feature-media" className="min-h-screen w-screen pt-14 border-t border-white/10">
       <div className="text-center py-14">
         <h2 className="text-2xl md:text-4xl font-kite text-white">Our Team</h2>
       </div>
