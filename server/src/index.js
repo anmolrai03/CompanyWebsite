@@ -16,7 +16,7 @@ const app = express()
 connectdb()
 .then(() => {
     app.listen(port, () => {
-        console.log(`server is running at port ${port}`)
+        console.log(`server is running on http://localhost:${port}`)
     })
 })
 .catch((error) => {

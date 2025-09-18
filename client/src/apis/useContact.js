@@ -1,7 +1,8 @@
 // useContact.js
 const useContact = async (formData) => {
+
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/contacts`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/contacts/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
