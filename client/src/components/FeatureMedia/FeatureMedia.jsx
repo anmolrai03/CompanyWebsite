@@ -107,9 +107,12 @@ function FeatureMedia () {
   });
 
   return (
-    <div id="feature-media" className="min-h-screen w-screen pt-14">
+    <div id="feature-media" className="min-h-screen w-screen pt-14 border-t border-gray-300/30">
+      <div className="text-center py-14">
+        <h2 className="text-2xl md:text-4xl font-kite text-white">Our Team</h2>
+      </div>
+      
       <div className="h-dvh w-screen" id="feature-clip">
-        
         <div className="mask-clip-path feature-image">
           <img
             src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
