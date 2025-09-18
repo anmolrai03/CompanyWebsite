@@ -38,6 +38,7 @@ function Home() {
       <FeatureMedia />
       <SampleWork />
       <SocialHandle />
+      <Footer />
       
     </div>
   );
