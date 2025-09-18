@@ -9,7 +9,7 @@ const app = express()
 app.use(
     cors(
         {
-            origin: process.env.CORS_ORIGIN || 5753
+            origin: process.env.CORS_ORIGIN || 5173
         }
     )
 )
@@ -51,6 +51,6 @@ import userRouter from "./routes/user.routes.js"
 
 // routes declaration
 
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1", routeController); // mounts /contacts and other future routes
 
 export { app }
