@@ -4,10 +4,8 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
 import { X, ChevronRight } from "lucide-react";
 
-
 import LogoModel from "../Loader/LogoModel";
 import ButtonElement from "../utils/ButtonElement/ButtonElement";
-
 
 // Logo rotation on scroll
 function ScrollRotatingLogo() {
@@ -45,6 +43,7 @@ function Header({ isLoading = false }) {
   const menuItemsRef = useRef([]);
   const devRef = useRef(null);
   const closeBtnRef = useRef(null);
+  const headerRef = useRef(null); // Ref for the header element
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,6 +51,45 @@ function Header({ isLoading = false }) {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Entrance animation
+  useEffect(() => {
+    if (headerRef.current) {
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Get final position of header
+      const finalPosition = headerRef.current.getBoundingClientRect();
+      
+      // Calculate center of screen
+      const centerX = viewportWidth / 2;
+      const centerY = viewportHeight / 2;
+      
+      // Calculate offset to center the header
+      const offsetX = centerX - (finalPosition.width / 2);
+      const offsetY = centerY - (finalPosition.height / 2);
+      
+      // Set initial position at center of screen
+      gsap.set(headerRef.current, {
+        x: offsetX,
+        y: offsetY,
+        scale: 0.8,
+        opacity: 0
+      });
+      
+      // Animate to final position
+      gsap.to(headerRef.current, {
+        x: 0,
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: "power3.out",
+        delay: 0.3
+      });
+    }
   }, []);
 
   const handleLogoClick = useCallback(() => {
@@ -135,7 +173,10 @@ function Header({ isLoading = false }) {
   return (
     <>
       {/* HEADER */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 pt-6 lg:px-[4.375rem] lg:pt-10 h-[4.688rem]">
+      <header 
+        ref={headerRef} 
+        className="fixed font-kite top-0 left-0 right-0 z-50 flex items-center justify-between px-4 pt-6 lg:px-[4.375rem] lg:pt-10 h-[4.688rem]"
+      >
         {/* HAMBURGER LEFT (mobile only) */}
         {isMobile && (
           <button

@@ -8,28 +8,10 @@ import Footer from "./components/Footer/Footer";
 
 function Layout() {
   const { isLoading } = useLoading();
-  const headerRef = useRef(null);
-
-  useEffect(() => {
-    if (!isLoading && headerRef.current) {
-      gsap.fromTo(
-        headerRef.current,
-        { y: -100, opacity: 0 }, // slide down from top OR bottom (your choice)
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power3.out",
-        }
-      );
-    }
-  }, [isLoading]);
 
   return (
     <>
-      {/* <div ref={headerRef}> */}
-        <Header isLoading={isLoading} />
-      {/* </div> */}
+      <Header isLoading={isLoading} />
       <Outlet />
       <Footer />
     </>

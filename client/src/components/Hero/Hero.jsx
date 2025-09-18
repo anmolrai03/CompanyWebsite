@@ -3,7 +3,13 @@
 
 // import ButtonElement from "../utils/ButtonElement/ButtonElement";
 
-// import {PlayIcon, PauseIcon, MuteIcon, VolumeIcon, CloseIcon} from '../../assets/buttons/buttons.js'
+// import {
+//   PlayIcon,
+//   PauseIcon,
+//   MuteIcon,
+//   VolumeIcon,
+//   CloseIcon,
+// } from "../../assets/buttons/buttons.js";
 
 // export default function Hero() {
 //   const [isPlaying, setIsPlaying] = useState(false);
@@ -13,7 +19,8 @@
 //   const [duration, setDuration] = useState(0);
 //   const [isMobile, setIsMobile] = useState(false);
 //   const [showControls, setShowControls] = useState(true);
-//   const [isAnimating, setIsAnimating] = useState(false);
+//   const [scrollDirection, setScrollDirection] = useState("down");
+//   const [isInView, setIsInView] = useState(false);
 
 //   const videoContainerRef = useRef(null);
 //   const fullscreenVideoRef = useRef(null);
@@ -22,12 +29,8 @@
 //   const controlsTimeoutRef = useRef(null);
 //   const originalOverflowRef = useRef("");
 //   const hiddenElementsRef = useRef([]);
-//   const previewContainerRef = useRef(null);
-//   const animationDataRef = useRef({
-//     originalRect: null,
-//     targetRect: null,
-//     clone: null
-//   });
+//   const heroSectionRef = useRef(null);
+//   const prevScrollY = useRef(0);
 
 //   // Check if mobile on mount and resize
 //   useEffect(() => {
@@ -36,12 +39,97 @@
 //     };
 
 //     checkMobile();
-//     window.addEventListener('resize', checkMobile);
+//     window.addEventListener("resize", checkMobile);
 
 //     return () => {
-//       window.removeEventListener('resize', checkMobile);
+//       window.removeEventListener("resize", checkMobile);
 //     };
 //   }, []);
+
+//   // Track scroll direction
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       const currentScrollY = window.scrollY;
+//       if (currentScrollY > prevScrollY.current + 5) {
+//         setScrollDirection("down");
+//       } else if (currentScrollY < prevScrollY.current - 5) {
+//         setScrollDirection("up");
+//       }
+//       prevScrollY.current = currentScrollY;
+//     };
+
+//     window.addEventListener("scroll", handleScroll, { passive: true });
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   // Intersection Observer to detect when hero section is in view
+//   useEffect(() => {
+//     const observer = new IntersectionObserver(
+//       ([entry]) => {
+//         if (entry.isIntersecting) {
+//           setIsInView(true);
+//         } else {
+//           setIsInView(false);
+//         }
+//       },
+//       { threshold: 0.1 }
+//     );
+
+//     if (heroSectionRef.current) {
+//       observer.observe(heroSectionRef.current);
+//     }
+
+//     return () => {
+//       if (heroSectionRef.current) {
+//         observer.unobserve(heroSectionRef.current);
+//       }
+//     };
+//   }, []);
+
+//   // Animate hero section when it enters viewport
+//   useEffect(() => {
+//     if (!isInView) return;
+
+//     const direction = scrollDirection === "down" ? 1 : -1;
+//     const initialY = direction === 1 ? 100 : -100;
+
+//     // Animate the entire hero section
+//     gsap.fromTo(
+//       heroSectionRef.current,
+//       {
+//         y: initialY,
+//         opacity: 0,
+//       },
+//       {
+//         y: 0,
+//         opacity: 1,
+//         duration: 1.2,
+//         ease: "power3.out",
+//       }
+//     );
+
+//     // If on mobile, also animate the content
+//     if (isMobile) {
+//       const mobileContent =
+//         heroSectionRef.current.querySelector(".relative.z-10");
+//       if (mobileContent) {
+//         gsap.fromTo(
+//           mobileContent,
+//           {
+//             y: initialY * 0.5,
+//             opacity: 0,
+//           },
+//           {
+//             y: 0,
+//             opacity: 1,
+//             duration: 1,
+//             ease: "power3.out",
+//             delay: 0.2,
+//           }
+//         );
+//       }
+//     }
+//   }, [isInView, scrollDirection, isMobile]);
 
 //   // Lock scroll and hide everything when desktop video is playing
 //   useEffect(() => {
@@ -57,9 +145,10 @@
 //       hiddenElementsRef.current = [];
 
 //       // Find the React root element (usually has id="root" or similar)
-//       const rootElement = document.getElementById('root') ||
-//                          document.querySelector('[data-reactroot]') ||
-//                          document.body.children[0]; // fallback to first child
+//       const rootElement =
+//         document.getElementById("root") ||
+//         document.querySelector("[data-reactroot]") ||
+//         document.body.children[0]; // fallback to first child
 
 //       if (rootElement) {
 //         // Hide all direct children of the root element
@@ -69,16 +158,18 @@
 //           const element = rootChildren[i];
 
 //           // Skip if this element contains our video container
-//           if (element === videoContainerRef.current ||
-//               element.contains(videoContainerRef.current) ||
-//               element.classList.contains('fullscreen-video-container')) {
+//           if (
+//             element === videoContainerRef.current ||
+//             element.contains(videoContainerRef.current) ||
+//             element.classList.contains("fullscreen-video-container")
+//           ) {
 //             continue;
 //           }
 
 //           // Store the original visibility state and hide the element
 //           hiddenElementsRef.current.push({
 //             element: element,
-//             originalVisibility: element.style.visibility || ''
+//             originalVisibility: element.style.visibility || "",
 //           });
 
 //           element.style.visibility = "hidden";
@@ -91,17 +182,19 @@
 //         const element = bodyChildren[i];
 
 //         // Skip the root element (already handled above) and our video container
-//         if (element === rootElement ||
-//             element === videoContainerRef.current ||
-//             element.contains(videoContainerRef.current) ||
-//             element.classList.contains('fullscreen-video-container')) {
+//         if (
+//           element === rootElement ||
+//           element === videoContainerRef.current ||
+//           element.contains(videoContainerRef.current) ||
+//           element.classList.contains("fullscreen-video-container")
+//         ) {
 //           continue;
 //         }
 
 //         // Store the original visibility state and hide the element
 //         hiddenElementsRef.current.push({
 //           element: element,
-//           originalVisibility: element.style.visibility || ''
+//           originalVisibility: element.style.visibility || "",
 //         });
 
 //         element.style.visibility = "hidden";
@@ -112,7 +205,6 @@
 //         videoContainerRef.current.style.visibility = "visible";
 //         videoContainerRef.current.style.zIndex = "9999";
 //       }
-
 //     } else if (!isPlaying || isMobile) {
 //       // Restore scroll and show all elements
 //       document.body.style.overflow = originalOverflowRef.current || "auto";
@@ -179,135 +271,67 @@
 //       }
 //     };
 
-//     window.addEventListener('mousemove', handleMouseMove);
+//     window.addEventListener("mousemove", handleMouseMove);
 
 //     return () => {
-//       window.removeEventListener('mousemove', handleMouseMove);
+//       window.removeEventListener("mousemove", handleMouseMove);
 //     };
 //   }, [isPlaying, isMobile]);
 
-//   // ---- Handlers ----
-//   const handleOpen = async () => {
+//   // // ---- Handlers ----
+//   const handleOpen = () => {
 //     // Only for desktop/tablet
-//     if (!isMobile && !isAnimating) {
-//       setIsAnimating(true);
+//     if (!isMobile) {
+//       setIsPlaying(true);
 
-//       // Store original position and dimensions
-//       const previewContainer = previewContainerRef.current;
-//       const originalRect = previewContainer.getBoundingClientRect();
-
-//       // Create a clone of the video for the animation
-//       const clone = previewVideoRef.current.cloneNode(true);
-//       clone.style.position = "fixed";
-//       clone.style.zIndex = "10000";
-//       clone.style.top = `${originalRect.top}px`;
-//       clone.style.left = `${originalRect.left}px`;
-//       clone.style.width = `${originalRect.width}px`;
-//       clone.style.height = `${originalRect.height}px`;
-//       clone.style.objectFit = "cover";
-//       clone.style.borderRadius = "12px";
-//       document.body.appendChild(clone);
-
-//       // Hide the original preview
-//       previewContainer.style.opacity = "0";
-
-//       // Store data for later use
-//       animationDataRef.current = {
-//         originalRect,
-//         targetRect: {
-//           top: 0,
-//           left: 0,
-//           width: window.innerWidth,
-//           height: window.innerHeight
-//         },
-//         clone
-//       };
-
-//       // Animate to fullscreen
-//       gsap.to(clone, {
-//         top: 0,
-//         left: 0,
-//         width: window.innerWidth,
-//         height: window.innerHeight,
-//         borderRadius: 0,
-//         duration: 0.8,
-//         ease: "power2.inOut",
-//         onComplete: () => {
-//           // Remove clone and show the actual fullscreen video
-//           document.body.removeChild(clone);
-//           setIsPlaying(true);
-
-//           // Play the actual video
-//           setTimeout(() => {
+//       gsap.fromTo(
+//         videoContainerRef.current,
+//         { scale: 0.7, borderRadius: "12px" },
+//         {
+//           scale: 1,
+//           borderRadius: "0px",
+//           duration: 0.8,
+//           ease: "power4.inOut",
+//           onComplete: () => {
 //             if (fullscreenVideoRef.current) {
 //               fullscreenVideoRef.current.play().then(() => {
 //                 setIsVideoPlaying(true);
-//                 setIsAnimating(false);
 //               }).catch(error => {
 //                 console.error("Error playing video:", error);
-//                 setIsAnimating(false);
 //               });
 //             }
-//           }, 100);
+//           },
 //         }
-//       });
+//       );
 //     }
 //   };
 
 //   const handleClose = () => {
 //     // Only for desktop/tablet
-//     if (!isMobile && !isAnimating) {
-//       setIsAnimating(true);
-
-//       // Pause the video
-//       if (fullscreenVideoRef.current) {
-//         fullscreenVideoRef.current.pause();
-//       }
-
-//       // Create a clone of the video for the animation
-//       const fullscreenVideo = fullscreenVideoRef.current;
-//       const clone = fullscreenVideo.cloneNode(true);
-//       clone.style.position = "fixed";
-//       clone.style.zIndex = "10000";
-//       clone.style.top = "0";
-//       clone.style.left = "0";
-//       clone.style.width = "100%";
-//       clone.style.height = "100%";
-//       clone.style.objectFit = "cover";
-//       document.body.appendChild(clone);
-
-//       // Hide the actual fullscreen video
-//       if (videoContainerRef.current) {
-//         videoContainerRef.current.style.opacity = "0";
-//       }
-
-//       // Animate back to original position
-//       gsap.to(clone, {
-//         top: `${animationDataRef.current.originalRect.top}px`,
-//         left: `${animationDataRef.current.originalRect.left}px`,
-//         width: `${animationDataRef.current.originalRect.width}px`,
-//         height: `${animationDataRef.current.originalRect.height}px`,
-//         borderRadius: "12px",
-//         duration: 0.8,
-//         ease: "power2.inOut",
-//         onComplete: () => {
-//           // Remove clone and reset states
-//           document.body.removeChild(clone);
-//           previewContainerRef.current.style.opacity = "1";
-//           setIsPlaying(false);
-//           setIsVideoPlaying(false);
-//           setIsAnimating(false);
-
-//           if (fullscreenVideoRef.current) {
-//             fullscreenVideoRef.current.currentTime = 0;
-//           }
+//     if (!isMobile) {
+//       gsap.fromTo(
+//         videoContainerRef.current,
+//         { scale: 1, borderRadius: "0px" },
+//         {
+//           scale: 0.7,
+//           borderRadius: "12px",
+//           duration: 0.8,
+//           ease: "power4.inOut",
+//           onComplete: () => {
+//             setIsPlaying(false);
+//             setIsVideoPlaying(false);
+//             if (fullscreenVideoRef.current) {
+//               fullscreenVideoRef.current.pause();
+//               fullscreenVideoRef.current.currentTime = 0;
+//             }
+//           },
 //         }
-//       });
+//       );
 //     }
 //   };
 
 //   const handlePlayPause = () => {
-//     if (!isMobile && fullscreenVideoRef.current && !isAnimating) {
+//     if (!isMobile && fullscreenVideoRef.current) {
 //       if (isVideoPlaying) {
 //         fullscreenVideoRef.current.pause();
 //         setIsVideoPlaying(false);
@@ -319,7 +343,7 @@
 //   };
 
 //   const handleMute = () => {
-//     if (!isMobile && fullscreenVideoRef.current && !isAnimating) {
+//     if (!isMobile && fullscreenVideoRef.current) {
 //       fullscreenVideoRef.current.muted = !isMuted;
 //       setIsMuted(!isMuted);
 //     }
@@ -334,7 +358,7 @@
 //   // ---- Escape key (desktop only) ----
 //   useEffect(() => {
 //     const onKeyDown = (e) => {
-//       if (!isMobile && isPlaying && !isAnimating) {
+//       if (!isMobile && isPlaying) {
 //         if (e.key === "Escape") {
 //           handleClose();
 //         }
@@ -349,7 +373,7 @@
 //     };
 //     window.addEventListener("keydown", onKeyDown);
 //     return () => window.removeEventListener("keydown", onKeyDown);
-//   }, [isVideoPlaying, isMuted, isPlaying, isMobile, isAnimating]);
+//   }, [isVideoPlaying, isMuted, isPlaying, isMobile]);
 
 //   // ---- Video listeners for desktop ----
 //   useEffect(() => {
@@ -371,7 +395,10 @@
 //   }, [isPlaying, isMobile]);
 
 //   return (
-//     <section className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden pt-12">
+//     <section
+//       ref={heroSectionRef}
+//       className="relative h-screen w-full bg-black flex items-center justify-center overflow-hidden pt-12"
+//     >
 //       {/* Desktop/Tablet Hero Section */}
 //       {!isMobile && (
 //         <>
@@ -391,20 +418,17 @@
 
 //           {/* Preview state */}
 //           {!isPlaying && (
-//             <div
-//               ref={previewContainerRef}
-//               className="relative z-10 w-[60%] max-w-3xl aspect-video bg-white justify-center items-center flex rounded-lg overflow-hidden"
-//             >
+//             <div className="relative z-10 w-[60%] max-w-3xl aspect-video bg-white justify-center items-center flex rounded-lg">
 //               <video
 //                 ref={previewVideoRef}
-//                 className="w-full h-full object-cover"
+//                 className="w-1/2 h- 1/2 object-cover rounded-lg shadow-lg"
 //                 src="/hero-video.mp4"
 //                 muted
 //                 autoPlay
 //                 loop
 //                 playsInline
 //               />
-//               <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+//               <div className="absolute inset-0 flex items-center justify-center rounded-lg">
 //                 <ButtonElement name="Watch Video" onClick={handleOpen} />
 //               </div>
 //             </div>
@@ -416,10 +440,14 @@
 //             className="fullscreen-video-container fixed inset-0 z-[9999] bg-transparent flex items-center justify-center"
 //             style={{
 //               display: isPlaying ? "flex" : "none",
-//               opacity: isPlaying ? 1 : 0
+//               left: isPlaying ? "0" : "-100vw",
+//               top: isPlaying ? "0" : "-100vh",
 //             }}
 //             onClick={(e) => {
-//               if ((e.target === videoContainerRef.current || e.target === fullscreenVideoRef.current) && !isAnimating) {
+//               if (
+//                 e.target === videoContainerRef.current ||
+//                 e.target === fullscreenVideoRef.current
+//               ) {
 //                 handlePlayPause();
 //               }
 //             }}
@@ -456,7 +484,9 @@
 //                     onClick={handlePlayPause}
 //                   />
 //                   <ButtonElement
-//                     name={`${formatTime(currentTime)} / ${formatTime(duration)}`}
+//                     name={`${formatTime(currentTime)} / ${formatTime(
+//                       duration
+//                     )}`}
 //                   />
 //                   <ButtonElement
 //                     name="Close"
@@ -501,14 +531,13 @@
 
 //           {/* Mobile content overlay */}
 //           <div className="relative z-10 text-center text-white px-6">
-//             <h1 className="text-4xl md:text-6xl font-bold mb-4">
-//               DEV SPHERE
-//             </h1>
+//             <h1 className="text-4xl md:text-6xl font-bold mb-4">DEV SPHERE</h1>
 //             <h2 className="text-xl md:text-2xl font-light mb-8">
 //               Memory Collection 2025
 //             </h2>
 //             <p className="text-sm md:text-base opacity-80 max-w-md mx-auto leading-relaxed">
-//               Experience our latest development showcase featuring innovative solutions and creative implementations.
+//               Experience our latest development showcase featuring innovative
+//               solutions and creative implementations.
 //             </p>
 //           </div>
 
@@ -523,6 +552,8 @@
 //     </section>
 //   );
 // }
+
+
 
 import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
@@ -557,6 +588,8 @@ export default function Hero() {
   const hiddenElementsRef = useRef([]);
   const heroSectionRef = useRef(null);
   const prevScrollY = useRef(0);
+  const previewContainerRef = useRef(null);
+  const reflectionRef = useRef(null);
 
   // Check if mobile on mount and resize
   useEffect(() => {
@@ -612,25 +645,28 @@ export default function Hero() {
     };
   }, []);
 
-  // Animate hero section when it enters viewport
+  // Enhanced entrance animation for hero section
   useEffect(() => {
     if (!isInView) return;
 
     const direction = scrollDirection === "down" ? 1 : -1;
-    const initialY = direction === 1 ? 100 : -100;
+    const initialY = direction === 1 ? 150 : -150; // Increased from 100 to 150
 
-    // Animate the entire hero section
+    // Animate the entire hero section with smoother animation
     gsap.fromTo(
       heroSectionRef.current,
       {
         y: initialY,
         opacity: 0,
+        scale: 0.95,
       },
       {
         y: 0,
         opacity: 1,
-        duration: 1.2,
+        scale: 1,
+        duration: 1.5, // Increased duration for smoother animation
         ease: "power3.out",
+        clearProps: "all"
       }
     );
 
@@ -648,9 +684,9 @@ export default function Hero() {
           {
             y: 0,
             opacity: 1,
-            duration: 1,
+            duration: 1.2,
             ease: "power3.out",
-            delay: 0.2,
+            delay: 0.3,
           }
         );
       }
@@ -810,13 +846,29 @@ export default function Hero() {
     if (!isMobile) {
       setIsPlaying(true);
 
+      // Create reflection effect
+      if (previewContainerRef.current && reflectionRef.current) {
+        gsap.to(reflectionRef.current, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      }
+
       gsap.fromTo(
         videoContainerRef.current,
-        { scale: 0.7, borderRadius: "12px" },
+        { 
+          scale: 0.8, 
+          borderRadius: "12px",
+          opacity: 0.8,
+          y: 20
+        },
         {
           scale: 1,
           borderRadius: "0px",
-          duration: 0.8,
+          opacity: 1,
+          y: 0,
+          duration: 1.2, // Increased duration for smoother animation
           ease: "power4.inOut",
           onComplete: () => {
             if (fullscreenVideoRef.current) {
@@ -837,15 +889,28 @@ export default function Hero() {
     if (!isMobile) {
       gsap.fromTo(
         videoContainerRef.current,
-        { scale: 1, borderRadius: "0px" },
+        { scale: 1, borderRadius: "0px", opacity: 1 },
         {
-          scale: 0.7,
+          scale: 0.8,
           borderRadius: "12px",
-          duration: 0.8,
+          opacity: 0.8,
+          y: 20,
+          duration: 1.2, // Increased duration for smoother animation
           ease: "power4.inOut",
           onComplete: () => {
             setIsPlaying(false);
             setIsVideoPlaying(false);
+            
+            // Restore reflection effect
+            if (previewContainerRef.current && reflectionRef.current) {
+              gsap.to(reflectionRef.current, {
+                opacity: 0.6,
+                duration: 0.5,
+                delay: 0.3,
+                ease: "power2.out"
+              });
+            }
+            
             if (fullscreenVideoRef.current) {
               fullscreenVideoRef.current.pause();
               fullscreenVideoRef.current.currentTime = 0;
@@ -944,18 +1009,43 @@ export default function Hero() {
 
           {/* Preview state */}
           {!isPlaying && (
-            <div className="relative z-10 w-[60%] max-w-3xl aspect-video bg-white justify-center items-center flex rounded-lg">
-              <video
-                ref={previewVideoRef}
-                className="w-1/2 h- 1/2 object-cover rounded-lg shadow-lg"
-                src="/hero-video.mp4"
-                muted
-                autoPlay
-                loop
-                playsInline
-              />
-              <div className="absolute inset-0 flex items-center justify-center rounded-lg">
-                <ButtonElement name="Watch Video" onClick={handleOpen} />
+            <div 
+              ref={previewContainerRef}
+              className="relative z-10 w-[60%] max-w-3xl aspect-video justify-center items-center flex flex-col"
+            >
+              <div className="relative w-full h-full bg-white justify-center items-center flex rounded-lg overflow-hidden">
+                <video
+                  ref={previewVideoRef}
+                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  src="/hero-video.mp4"
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                />
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/30">
+                  <ButtonElement name="Watch Video" onClick={handleOpen} />
+                </div>
+              </div>
+              
+              {/* Reflection effect */}
+              <div 
+                ref={reflectionRef}
+                className="w-full h-16 -mt-2 overflow-hidden opacity-60"
+                style={{
+                  maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%)"
+                }}
+              >
+                <div 
+                  className="w-full h-full transform scale-y-[-1] opacity-50"
+                  style={{
+                    backgroundImage: "url('/hero-video-poster.jpg')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    filter: "blur(2px) brightness(1.2)"
+                  }}
+                />
               </div>
             </div>
           )}
@@ -1029,7 +1119,7 @@ export default function Hero() {
                 className="absolute inset-0 flex items-center justify-center"
                 onClick={handlePlayPause}
               >
-                <div className="bg-black/50 rounded-full p-4 cursor-pointer">
+                <div className="bg-black/50 rounded-full p-4 cursor-pointer hover:bg-black/70 transition-colors">
                   <PlayIcon />
                 </div>
               </div>
@@ -1056,10 +1146,10 @@ export default function Hero() {
           <div className="absolute inset-0 bg-black/40 z-5"></div>
 
           {/* Mobile content overlay */}
-          <div className="relative z-10 text-center text-white px-6">
+          <div className="relative z-10 text-center text-white px-6 font-kite">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">DEV SPHERE</h1>
             <h2 className="text-xl md:text-2xl font-light mb-8">
-              Memory Collection 2025
+              Your one Platform for tech solutions.
             </h2>
             <p className="text-sm md:text-base opacity-80 max-w-md mx-auto leading-relaxed">
               Experience our latest development showcase featuring innovative

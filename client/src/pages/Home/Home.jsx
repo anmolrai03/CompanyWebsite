@@ -2,14 +2,15 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
+// COMPONENTS IMPORT
 import Hero from "../../components/Hero/Hero";
-import MiddleSection from "../../components/MiddleSection/MiddleSection";
 import AboutText from "../../components/About/AboutText";
 import Services from "../../components/Services/Services";
-import FeatureImage from "../../components/FeatureMedia/FeatureMedia";
 import FeatureMedia from "../../components/FeatureMedia/FeatureMedia";
 import SampleWork from "../../components/SampleWork/SampleWork";
 import SocialHandle from "../../components/SocialHandle/SocialHandle";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
 
 function Home() {
   const heroRef = useRef(null);
@@ -27,6 +28,7 @@ function Home() {
 
   return (
     <div className="w-full h-max overflow-hidden">
+      <Header />
       <section className="w-full h-max">
         <Hero />
       </section>
@@ -36,7 +38,7 @@ function Home() {
       <FeatureMedia />
       <SampleWork />
       <SocialHandle />
-      {/* <MiddleSection /> */}
+      <Footer />
       
     </div>
   );
