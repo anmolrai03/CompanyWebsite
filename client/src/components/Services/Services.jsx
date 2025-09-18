@@ -3,48 +3,14 @@ import ServiceCard from "./ServiceCard";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+// IMPORT DATA
+import services from "../../assets/data/services";
+
+
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 function Services() {
-  const services = [
-    {
-      id: 1,
-      name: "Web Development",
-      images: [
-        "/images/web-dev/webdev1.jpeg",
-        "/images/web-dev/webdev2.jpeg",
-      ],
-    },
-    {
-      id: 2,
-      name: "Social Media Marketing",
-      images: [
-        "/images/social/social1.gif",
-        "/images/social/social2.gif",
-      ],
-    },
-    {
-      id: 3,
-      name: "SaaS Solutions",
-      images: ["/images/saas/saas1.gif"],
-    },
-    {
-      id: 4,
-      name: "Digital Marketing",
-      images: [],
-    },
-    {
-      id: 5,
-      name: "Photography",
-      images: [],
-    },
-    {
-      id: 6,
-      name: "Videography",
-      images: [],
-    },
-  ];
 
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
@@ -102,11 +68,11 @@ function Services() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="px-8 py-16 bg-black">
+    <section ref={sectionRef} className="px-8 py-16 bg-black font-kite">
       <div className="max-w-7xl mx-auto">
         <h2
           ref={titleRef}
-          className="text-4xl font-mono text-white text-center mb-12 tracking-wide"
+          className="text-4xl text-white text-center mb-12 tracking-wide"
         >
           OUR SERVICES
         </h2>
