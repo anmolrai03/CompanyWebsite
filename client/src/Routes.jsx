@@ -66,9 +66,9 @@ import PageLoader from "./components/Loader/PageLoader";
 // import Contact from "./pages/Contact/Contact";
 
 // LAZY IMPORTS
-// const Home = lazy( () => import('./pages/Home/Home'))
-// const Contact = lazy(() => import("./pages/Contact/Contact"));
-// const ServicePage = lazy( () => import("./pages/ServicePage/ServicePage"));
+const Home = lazy( () => import('./pages/Home/Home'))
+const Contact = lazy(() => import("./pages/Contact/Contact"));
+const ServicePage = lazy( () => import("./pages/ServicePage/ServicePage"));
 
 // // Add artificial delay for testing the loader
 const lazyWithDelay = (importFn, delay = 2000) => {
@@ -82,9 +82,9 @@ const lazyWithDelay = (importFn, delay = 2000) => {
   );
 };
 
-const Home = lazyWithDelay(() => import("./pages/Home/Home"), 3000);
-const Contact = lazyWithDelay( () => import("./pages/Contact/Contact"), 3000);
-const ServicePage = lazyWithDelay( () => import("./pages/ServicePage/ServicePage"), 3000);
+// const Home = lazyWithDelay(() => import("./pages/Home/Home"), 3000);
+// const Contact = lazyWithDelay( () => import("./pages/Contact/Contact"), 3000);
+// const ServicePage = lazyWithDelay( () => import("./pages/ServicePage/ServicePage"), 3000);
 
 
 // Custom Suspense wrapper that manages loading state

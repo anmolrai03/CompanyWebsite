@@ -445,7 +445,7 @@ function Header({ isLoading = false }) {
         {/* LEFT NAV (desktop only) */}
         {!isMobile && (
           <div className="flex items-center gap-x-3">
-            <ButtonElement name="Home" />
+            <a href="/"><ButtonElement name="Home" /></a>
             <ButtonElement name="Our Story" />
           </div>
         )}

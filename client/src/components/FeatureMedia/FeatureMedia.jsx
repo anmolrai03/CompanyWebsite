@@ -84,6 +84,8 @@ import { ScrollTrigger } from "gsap/all";
 
 import "./featuremedia.css";
 
+import ourteam from '../../assets/images/ourteam.jpeg'
+
 gsap.registerPlugin(ScrollTrigger);
 
 function FeatureMedia () {
@@ -115,7 +117,7 @@ function FeatureMedia () {
       <div className="h-dvh w-screen" id="feature-clip">
         <div className="mask-clip-path feature-image">
           <img
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+            src={ourteam}
             alt="Background"
             className="absolute left-0 top-0 size-full object-cover"
           />
