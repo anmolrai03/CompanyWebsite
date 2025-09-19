@@ -61,11 +61,12 @@ import LoadingContextProvider from "./context/LoadingContext/LoadingContextProvi
 //COMPONENTS IMPORT
 import Layout from "./Layout";
 import Loader from "./components/Loader/Loader";
+import PageLoader from "./components/Loader/PageLoader";
 // import Contact from "./pages/Contact/Contact";
 
 // LAZY IMPORTS
 // const Home = lazy( () => import('./pages/Home/Home'))
-const Contact = lazy(() => import("./pages/Contact/Contact"));
+// const Contact = lazy(() => import("./pages/Contact/Contact"));
 
 // // Add artificial delay for testing the loader
 const lazyWithDelay = (importFn, delay = 2000) => {
@@ -80,6 +81,7 @@ const lazyWithDelay = (importFn, delay = 2000) => {
 };
 
 const Home = lazyWithDelay(() => import("./pages/Home/Home"), 3000);
+const Contact = lazyWithDelay( () => import("./pages/Contact/Contact"), 3000);
 
 // Custom Suspense wrapper that manages loading state
 function LoadingAwareLoader() {
@@ -102,7 +104,7 @@ function Routes() {
           <Route
             path="contact"
             element={
-              <Suspense fallback={<LoadingAwareLoader />}>
+              <Suspense fallback={ <PageLoader /> }>
                 <Contact />
               </Suspense>
             }

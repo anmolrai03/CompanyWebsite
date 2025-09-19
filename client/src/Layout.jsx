@@ -30,7 +30,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 
 import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
+// import Footer from "./components/Footer/Footer";
 
 export default function Layout() {
   const location = useLocation();
@@ -44,19 +44,8 @@ export default function Layout() {
 
   return (
     <>
-    <Header />
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      {/* ✅ Header at the top */}
-      
-
-      {/* ✅ Main content from nested routes */}
-      <main className="flex-grow">
-        <Outlet />
-      </main>
-
-      {/* ✅ Footer at the bottom */}
-      <Footer />
-    </div>
+      <Header />
+      <Outlet />
     </>
     
   );

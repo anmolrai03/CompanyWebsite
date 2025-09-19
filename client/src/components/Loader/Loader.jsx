@@ -53,6 +53,7 @@ import LogoModel from "./LogoModel";
 export default function Loader() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
+
       <div className="w-48 h-48 md:w-56 md:h-56">
         <Canvas camera={{ position: [0, 0, 3] }}>
           <ambientLight intensity={1.2} />
