@@ -5,6 +5,9 @@ import ButtonElement from "../../components/utils/ButtonElement/ButtonElement";
 import useContact from "../../apis/useContact";
 
 function Contact() {
+
+  const {sendDetails, loading} = useContact();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,21 +31,22 @@ function Contact() {
     }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("Form Data:", formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
 
-  // send form data
-  await useContact(formData);
+    const result = await sendDetails(formData);
 
-  // clear the fields
-  setFormData({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-};
+    if (result.success) {
+      // Clear fields on success
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    }
+  };
 
 
   return (
@@ -121,7 +125,7 @@ const handleSubmit = async (e) => {
           </div>
 
           {/* Submit */}
-          <button onClick={handleSubmit} className="mt-4 flex justify-center">
+          <button onClick={handleSubmit} disabled={loading} className={`mt-4 flex justify-center ${loading ? "pointer-events-none" : ""}`}>
             <ButtonElement name="Send Message" />
           </button>
         </form>
