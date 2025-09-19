@@ -5,7 +5,7 @@ import {
   getContactById,
   updateContactStatus,
   deleteContact
-} from "../controllers/contact.controller.js";
+} from "../controllers/contact-us.controller.js";
 
 const router = Router();
 

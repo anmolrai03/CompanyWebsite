@@ -1,21 +1,63 @@
+// import { useState } from "react";
+
+// function useContact() {
+
+//   const [loading, setloading] = useState(false);
+
+
+//   let sendDetails = async (formData) => {
+
+//     setloading(true);
+//     try {
+//       const response = await fetch(
+//         `${import.meta.env.VITE_API_URL}/api/v1/contacts/`,
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify(formData),
+//         }
+//       );
+
+//       const data = await response.json();
+
+//       if (response.ok) {
+//         console.log("Form submitted successfully:", data);
+//       } else {
+//         console.log("Error submitting form:", data);
+//       }
+//     } catch (error) {
+//       alert('Server error')
+//       console.log("Network or server error:", error);
+//     } finally{
+//       setloading(false);
+//     }
+
+//   };
+
+//   return {loading, sendDetails};
+// }
+
+// export default useContact;
+
+
+
+
+
 import { useState } from "react";
 
 function useContact() {
+  const [loading, setLoading] = useState(false);
 
-  const [loading, setloading] = useState(false);
-
-
-  let sendDetails = async (formData) => {
-
-    setloading(true);
+  const sendDetails = async (formData) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/v1/contacts/`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         }
       );
@@ -27,16 +69,18 @@ function useContact() {
       } else {
         console.log("Error submitting form:", data);
       }
-    } catch (error) {
-      alert('Server error')
-      console.log("Network or server error:", error);
-    } finally{
-      setloading(false);
-    }
 
+      return data; // ✅ return the API response
+
+    } catch (error) {
+      console.error("Network or server error:", error);
+      return { success: false, message: error.message }; // ✅ return fallback
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return {loading, sendDetails};
+  return { loading, sendDetails };
 }
 
 export default useContact;

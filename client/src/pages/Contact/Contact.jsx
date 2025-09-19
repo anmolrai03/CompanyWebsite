@@ -32,21 +32,24 @@ function Contact() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
+  e.preventDefault();
+  console.log("Form Data:", formData);
 
+  try {
     const result = await sendDetails(formData);
 
-    if (result.success) {
-      // Clear fields on success
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    }
-  };
+if (result?.success) {
+  setFormData({ name: "", email: "", subject: "", message: "" });
+  console.log("Form submitted successfully:", result);
+} else {
+  console.log("Form submission failed:", result);
+}
+
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+};
+
 
 
   return (
@@ -125,9 +128,10 @@ function Contact() {
           </div>
 
           {/* Submit */}
-          <button onClick={handleSubmit} disabled={loading} className={`mt-4 flex justify-center ${loading ? "pointer-events-none" : ""}`}>
-            <ButtonElement name="Send Message" />
-          </button>
+          <button type="submit" disabled={loading} className={`mt-4 flex justify-center ${loading ? "pointer-events-none" : ""}`}>
+  <ButtonElement name="Send Message" />
+</button>
+
         </form>
       </div>
     </div>

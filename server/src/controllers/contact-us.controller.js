@@ -1,9 +1,15 @@
-import { Contact } from "../models/contact.model.js"; // your Mongoose model
-import { ApiError, ApiResponse, asyncHandler, uploadCloudinary } from "../utils"; // adjust path if needed
+import { Contact } from "../models/contact-us.model.js"; // your Mongoose model
+// import { ApiError, ApiResponse, asyncHandler, uploadCloudinary } from "../utils"; // adjust path if needed
+import { ApiError } from "../utils/apiError.js";
+import { ApiResponse } from "../utils/apiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+// import { uploadCloudinary } from "../utils/multer.js"; // if you plan to use file uploads
+//
 import fs from "fs";
 
 // Create a new contact (submit form)
 export const createContact = asyncHandler(async (req, res, next) => {
+  console.log("req")
   const { name, email, subject, message } = req.body;
 
   if (!name || !email || !subject || !message) {
