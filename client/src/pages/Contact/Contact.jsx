@@ -5,8 +5,7 @@ import ButtonElement from "../../components/utils/ButtonElement/ButtonElement";
 import useContact from "../../apis/useContact";
 
 function Contact() {
-
-  const {sendDetails, loading} = useContact();
+  const { sendDetails, loading } = useContact();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -32,25 +31,22 @@ function Contact() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("Form Data:", formData);
+    e.preventDefault();
+    // console.log("Form Data:", formData);
 
-  try {
-    const result = await sendDetails(formData);
+    try {
+      const result = await sendDetails(formData);
 
-if (result?.success) {
-  setFormData({ name: "", email: "", subject: "", message: "" });
-  console.log("Form submitted successfully:", result);
-} else {
-  console.log("Form submission failed:", result);
-}
-
-  } catch (error) {
-    console.error("Error submitting form:", error);
-  }
-};
-
-
+      if (result?.success) {
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        console.log("Form submitted successfully:", result);
+      } else {
+        console.log("Form submission failed:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
   return (
     <div
@@ -128,10 +124,15 @@ if (result?.success) {
           </div>
 
           {/* Submit */}
-          <button type="submit" disabled={loading} className={`mt-4 flex justify-center ${loading ? "pointer-events-none" : ""}`}>
-  <ButtonElement name="Send Message" />
-</button>
-
+          <button
+            type="submit"
+            disabled={loading}
+            className={`mt-4 flex justify-center ${
+              loading ? "pointer-events-none" : ""
+            }`}
+          >
+            <ButtonElement name="Send Message" />
+          </button>
         </form>
       </div>
     </div>
