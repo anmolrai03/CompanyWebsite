@@ -1147,7 +1147,7 @@ export default function Hero() {
 
           {/* Mobile content overlay */}
           <div className="relative z-10 text-center text-white px-6 font-kite">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">DEV SPHERE</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">UDYOG PORTAL</h1>
             <h2 className="text-xl md:text-2xl font-light mb-8">
               Your one Platform for tech solutions.
             </h2>

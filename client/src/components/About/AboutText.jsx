@@ -102,7 +102,7 @@ function AboutText() {
       
       <h1 className="hero-title z-10 text-center text-3xl md:text-5xl lg:text-6xl max-w-5xl leading-tight tracking-tight space-y-2 font-extralight font-kite">
         <span className="line block">
-          Welcome to the Dev Sphere official
+          Welcome to the Udyog Portal official
         </span>
         <span className="line block">
           The website for your one-on solution 

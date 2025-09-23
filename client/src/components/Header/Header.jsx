@@ -500,7 +500,7 @@ function Header({ isLoading = false }) {
               ref={devRef}
               className="text-black text-lg sm:text-xl md:text-2xl font-semibold flex space-x-1 tracking-wider"
             >
-              {"DEV SPHERE".split("").map((char, i) => (
+              {"UDYOG PROTAL".split("").map((char, i) => (
                 <span key={i}>{char}</span>
               ))}
             </div>

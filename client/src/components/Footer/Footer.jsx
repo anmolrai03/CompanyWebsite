@@ -90,7 +90,7 @@ export default function Footer() {
       {/* DEV SEP text */}
       <div className="relative flex items-center justify-center flex-1 w-full">
         <h1 className="relative text-center text-[16vw] md:text-[12vw] font-serif tracking-wide leading-none perspective-[1000px] w-full">
-          {"DEV SEP".split("").map((letter, i) => (
+          {"UDYOG".split("").map((letter, i) => (
             <span
               key={i}
               ref={(el) => addToRefs(el, i)}
@@ -111,7 +111,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom strip */}
-      <div className="w-full flex flex-col md:flex-row justify-between items-center px-6 md:px-10 py-6 text-sm md:text-base text-gray-400 gap-2">
+      {/* <div className="w-full flex flex-col md:flex-row justify-between items-center px-6 md:px-10 py-6 text-sm md:text-base text-gray-400 gap-2">
         <p>
           Design by{" "}
           <a href="#" className="hover:underline text-white">
@@ -124,7 +124,7 @@ export default function Footer() {
             Anmol Chauhan
           </a>
         </p>
-      </div>
+      </div> */}
     </footer>
   );
 }
